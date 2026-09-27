@@ -24,6 +24,8 @@ Four layouts, six sets of type, six colour sets or your own. Nothing you export 
 - It uploads nothing. Your facts, measurements and photographs stay in your browser. Photographs you export are
   redrawn, so any location your phone wrote into them is gone.
 - It asks for no account and no email.
+- It fetches nothing from anyone. The typefaces travel inside the file, so a card comes out in the face you chose,
+  online or off.
 - It never decides your rate. It does insist that a rate leaves with its terms.
 - It checks the shape of what you say, not whether it is true. Every fact is yours to stand behind.
 - It does not find you an agency. A real agency never charges you to sign you or to photograph you.
@@ -46,3 +48,6 @@ came back. Issues and pull requests are welcome too.
 ## Licence
 
 MIT. See `LICENSE`.
+
+The typefaces inside the file belong to their makers and are under the SIL Open Font License. Their copyright
+notices and the licence are in `FONT-LICENCES.txt`.
