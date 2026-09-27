@@ -1,5 +1,5 @@
 // Service worker: lets an installed copy open with no connection. Network first, cache second.
-const V = 'fl-cc920a552b';
+const V = 'fl-ce5adbcce1';
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png", "./icon-512-maskable.png", "./apple-touch-icon.png"];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(V).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
