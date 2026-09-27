@@ -748,7 +748,7 @@ window.FL_FONTS = {
     sizes:     ['UK fashion sizing study, Tellar', 'https://www.tellar.co.uk/the-first-comprehensive-independent-study-of-uk-fashion-sizing-accuracy-published-october-2025'],
   };
   const AUD = {
-    model:     { agency: { label: 'A model agency', blurb: 'Getting signed' }, client: { label: 'A client, booking you direct', blurb: 'Freelance work' } },
+    model:     { agency: { label: 'A model agency', blurb: 'Getting signed' }, client: { label: 'A client, booking you direct', blurb: 'Self-managed, no agency' } },
     dj:        { promoter: { label: 'A promoter or venue', blurb: 'A slot on a night' }, agent: { label: 'A booking agency', blurb: 'Representation, usually later' } },
     performer: { casting: { label: 'A casting director or agent', blurb: 'An audition or representation' } },
     creative:  { client: { label: 'A brand or client', blurb: 'A commission' }, ad: { label: 'An agency or art director', blurb: 'Getting on their list' } },
@@ -781,8 +781,9 @@ window.FL_FONTS = {
   // in the same file whenever you have made them.
   const SENDS = {
     model: {
-      agency: { first: ['digitals'], say: 'Lead with the digitals sheet, and paste your stats into their form: plain photographs are what an agency looks at first in a new face.' },
-      client: { first: ['card'], say: 'Lead with the comp card, the format a client compares like with like.' },
+      agency: { first: ['digitals'], say: 'Lead with the digitals sheet, and paste your stats into their form: plain photographs are what an agency looks at first in a new face. Most agencies make their own comp card once they sign you, so there is no need to print yours for them.', src: ['digitals', 'digitals2', 'compcard'] },
+      // Self-managed models book clients direct, so for them the comp card is the calling card.
+      client: { first: ['card'], say: 'Lead with the comp card, the format a client compares like with like. Working without an agency, your card carries your own contact details, and it is the one clients, photographers and castings keep.', src: ['compcard'] },
     },
     dj: {
       promoter: { first: ['sheet'], say: 'Lead with the one sheet, and put your mix link in the first line of the email. They check it on a phone, so keep the file small.' },
@@ -1836,7 +1837,7 @@ window.FL_FONTS = {
     };
     const rows = [...first.map(o => [o, 'What they ask for first', '']),
       ...CORE.filter(o => !first.includes(o)).map(o => [o, coreNote(o), made(o) ? '' : (o === 'rates' ? 'rates' : 'photos')])];
-    h += '<fieldset><legend><b>03</b> What to send them</legend><p class="pk-help" style="color:var(--text)">' + esc(send().say) + '</p>' +
+    h += '<fieldset><legend><b>03</b> What to send them</legend><p class="pk-help" style="color:var(--text)">' + esc(send().say) + '</p>' + (send().src ? srcHtml(send().src) : '') +
       '<ul class="pk-sendlist">' + rows.map(([o, note, fix]) => '<li><span class="nm">' + esc(OUT_LABEL[o]) + '</span><span class="nt' + (fix ? ' off' : '') + '">' + esc(note) + '</span>' +
         (fix ? '<button type="button" class="pk-btn" data-fix="' + fix + '">Make it</button>' : '') + '</li>').join('') + '</ul>' +
       '<p class="pk-help" style="margin-top:8px">Your portfolio, comp card and rate card go in the same file, behind what they ask for first, whenever you have made them.</p>' +
