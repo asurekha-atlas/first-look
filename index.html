@@ -727,13 +727,13 @@ window.FL_FONTS = {
 
   /* ================= who it is for: what each side asks of someone new =================
      Every rule the check applies carries a source, shown beside it, and no number here is made up.
-     Sources checked on 27 September 2026. */
+     Every source read in full on 27 September 2026, and each rule worded to what its source says. */
   const SRC = {
     digitals:  ['How to take modelling digitals, Petite Model Guide', 'https://petitemodelguide.com/how-to-take-modeling-digitals-get-signed/'],
     digitals2: ['Model digitals: what agencies expect, The Light Committee', 'https://thelightcommittee.com/blog/model-digitals-nyc-what-agencies-expect/'],
     stats:     ['Model measurements, The Model Guide', 'https://themodelguide.com/guides/model-measurements'],
     compcard:  ['What a comp card is, Get Scouted', 'https://www.getscouted.co/articles/what-is-a-comp-card'],
-    minors:    ['Working with minors and releases, LegalZoom', 'https://www.legalzoom.com/articles/the-basics-working-with-kids-and-model-release-forms'],
+    minors:    ['Teen modelling, a parent\'s guide, The Model Guide', 'https://themodelguide.com/guides/teen-modeling-parent-guide'],
     scams:     ['Modelling scams, Model Alliance', 'https://www.modelalliance.org/modeling-scams'],
     scams2:    ['Legitimate or scam agencies, Get Scouted', 'https://www.getscouted.co/articles/legitimate-vs-scam-modeling-agencies'],
     djkit:     ['What promoters want in a press kit, Backstage.dj', 'https://backstage.dj/blog/what-is-a-dj-presskit'],
@@ -796,8 +796,8 @@ window.FL_FONTS = {
     other: { client: { first: ['sheet'], say: 'Lead with your one sheet.' } },
   };
   const NEVER = {
-    model: { head: 'What a real agency never asks for', text: 'Money. A real agency does not charge you to sign you, to photograph you, to train you or to hold your place. It earns a commission on the work it books for you, after the client has paid.', src: ['scams', 'scams2'] },
-    dj: { head: 'What a fair promoter never asks for', text: 'A ticket quota as the price of the slot. If you have to buy or sell tickets to earn your set, the promoter is paid whether anyone comes or not. That is pay-to-play.', src: ['paytoplay'] },
+    model: { head: 'What a real agency never asks for', text: 'Money up front. A real agency does not charge you to sign you, to photograph you, to train you or to hold your place. It earns a commission on the paid work it books for you. If the contract lets it recover costs, such as printing your comp cards, they come out of what you earn, never out of your pocket first.', src: ['scams', 'scams2', 'minors', 'compcard'] },
+    dj: { head: 'What a fair promoter never asks for', text: 'A ticket quota as the price of the slot. If you have to buy or sell tickets to earn your set, you are doing the promoter\'s job, and paying for it. That is pay-to-play.', src: ['paytoplay'] },
   };
   const DIGITALS_HOW = [
     'A plain white or light wall, in bright daylight: face a window, or stand outside in the shade.',
@@ -1008,7 +1008,7 @@ window.FL_FONTS = {
       const four = [['headshot', 'a headshot'], ['three', 'a three-quarter'], ['profile', 'a profile'], ['full', 'a full length']];
       const gone = four.filter(([k]) => !ofKind(k).length).map(([, l]) => l);
       add('Four digitals: a headshot, a three-quarter, a profile and a full length.',
-        'Agencies look at plain photographs first in a new face, before any styled shoot. They lead the file; your portfolio and comp card go behind them.',
+        'Agencies look at plain photographs first in a new face, before any styled shoot, and some ask for more angles: both profiles, and full length from the side and back. They lead the file; your portfolio and comp card go behind them.',
         gone.length ? miss('Still to take: ' + gone.join(', ') + '.', 'photos') : ok(), { how: DIGITALS_HOW, src: ['digitals', 'digitals2'] });
       const digis = S.photos.filter(p => DIGI.includes(p.kind));
       if (digis.length) {
@@ -1018,15 +1018,15 @@ window.FL_FONTS = {
           n ? ask(n + ' not confirmed yet. Tick each one on the Photographs tab once it is.') : ok(), { src: ['digitals'] });
       }
       stats(['height', 'bust', 'waist', 'hips', 'shoe', 'hair', 'eyes'], 'Your stats, in the order they ask for them.',
-        'Height, bust or chest, waist, hips, shoe, hair and eyes, with units. It is the first line they read.', ['stats']);
+        'Height, bust or chest, waist, hips, shoe, hair and eyes, with units. Measure on the day you send them: fittings go by these numbers.', ['stats']);
       add('Your age.', 'It decides what they can book you for, and whether a parent or guardian needs to be involved.',
         isFinite(ageN()) ? ok() : miss('', 'book', 'f-who-age'));
       if (minor()) add('A parent or guardian, named, with how to reach them.',
-        'Under 18 you cannot sign a contract yourself, so an agency needs a parent or guardian to sign, and usually to come to castings with you. The rules differ by country.',
+        'Under 18, no real agency signs you without a parent or guardian\'s written consent, and the contract needs their signature. They should come to every casting and shoot with you too. The rules differ by country.',
         has(S.who.guardian) ? ok() : miss('', 'book', 'f-who-guardian'), { src: ['minors'] });
       contact();
     } else if (d === 'model') {
-      add('A comp card: one photograph on the front, three to five on the back.', 'The format every booker compares like with like.',
+      add('A comp card: one photograph on the front, three or four on the back.', 'The format every booker compares like with like.',
         front() && backs().length >= 3 ? ok() : miss(!front() ? 'No front photograph yet.' : backs().length + ' on the back so far.', 'photos'), { src: ['compcard'] });
       stats(['height', 'bust', 'waist', 'hips', 'shoe', 'hair', 'eyes'], 'Your stats, with units.', 'On the back of the card, in the order they read them.', ['stats']);
       rate(); contact();
@@ -1046,7 +1046,7 @@ window.FL_FONTS = {
         'Venues and cities rather than adjectives. No big gigs yet? Say where you play now. An honest short bio beats an inflated one.',
         !bw ? miss('', 'book', 'f-bio') : bw < 50 ? miss(bw + ' words. Say where you play, what, and for how long.', 'book', 'f-bio')
           : bw > 100 ? miss(bw + ' words. Cut it: they skim.', 'book', 'f-bio') : ok(bw + ' words.'), { src: ['djkit'] });
-      if (to === 'promoter') add('Your Instagram or TikTok.', 'Most promoters look at your socials before they answer the email.',
+      if (to === 'promoter') add('Your Instagram or TikTok.', 'A booking email carries two or three short links: your mix, your socials and your press kit.',
         linksBy(/instagram\.com|tiktok\.com/i).length ? ok() : miss('Add it under Links.'), { src: ['djgigs'] });
       if (to === 'agent') add('Where you have played, with venues and cities.', 'Quality over quantity: the nights that show your sound, not every one.',
         S.highlights.filter(has).length >= 2 ? ok() : miss(S.highlights.filter(has).length + ' so far.'), { src: ['djkit'] });
@@ -1060,17 +1060,17 @@ window.FL_FONTS = {
     } else if (d === 'performer') {
       add('A recent colour headshot that looks like you today.', 'It is the first thing a casting director sees. If your hair has changed since it was taken, it is out of date.',
         ofKind('headshot').length ? ok() : miss('', 'photos'), { src: ['headshots', 'casting'] });
-      add('Your credits and your skills.', 'No credits yet? Training and skills count: dance styles, languages, instruments, a driving licence.',
+      add('Your credits and your skills.', 'No screen credits yet? Short films, student films and theatre count, and so do training and skills such as accents, stage combat or an instrument.',
         S.highlights.some(has) || has(S.asks.skills) || has(S.asks.training) ? ok() : miss(''), { src: ['casting'] });
-      add('A showreel of two to three minutes.', 'Short clips of your work, alongside the CV.',
+      add('A showreel of one to three minutes.', 'Your best scene first, then short clips of your work. It goes alongside the CV.',
         linksBy(/reel|vimeo\.com|youtube\.com|youtu\.be|self.?tape/i).length ? ok() : miss('Add the link under Links.'), { src: ['showreel', 'casting'] });
       stats(['height', 'hair', 'eyes'], 'Height, hair and eyes.', 'With units, so they can check you against the brief.');
       contact();
     } else if (d === 'creative') {
       const n = folioItems().length;
-      add('Twelve to thirty of your best images, in one line of work.',
+      add('Fifteen to thirty of your best images, in one line of work.',
         'One weak image does more harm than leaving it out, and eighty tells them you cannot edit yourself. Show the work you want to be hired for.',
-        n < 12 ? miss(n + ' so far.', 'photos') : n > 30 ? miss(n + ' is too many. Cut to your best thirty or fewer.', 'photos') : ok(n + ' images.'), { src: ['folio', 'folio2'] });
+        n < 15 ? miss(n + ' so far.', 'photos') : n > 30 ? miss(n + ' is too many. Cut to your best thirty or fewer.', 'photos') : ok(n + ' images.'), { src: ['folio', 'folio2'] });
       add('One line on what you make and who for.', 'So they know in a sentence whether you fit the brief.', has(S.pitch) ? ok() : miss('', 'book', 'f-pitch'), { src: ['folio'] });
       if (to === 'client') rate();
       contact();
@@ -1231,7 +1231,7 @@ window.FL_FONTS = {
       if (!bs.length) {
         const c = L.cells[0]; ctx.fillStyle = mix(P.ink, .08); ctx.fillRect(c.x * k, c.y * k, c.w * k, c.h * k);
         setF(ctx, F.body, '400', 8, k); ctx.fillStyle = mix(P.ink, .45); ctx.textAlign = 'center';
-        ctx.fillText('Three to five photographs go here', (c.x + c.w / 2) * k, (c.y + c.h / 2) * k); ctx.textAlign = 'left';
+        ctx.fillText('Three or four photographs go here', (c.x + c.w / 2) * k, (c.y + c.h / 2) * k); ctx.textAlign = 'left';
       } else bs.forEach((p, i) => { const c = L.cells[i]; if (c) ph(ctx, p, c.x * k, c.y * k, c.w * k, c.h * k, P); });
 
       // the stats block answers the front, so each template reads as one card rather than two
@@ -1906,7 +1906,7 @@ window.FL_FONTS = {
       field('Short bio', 'bio', { area: true, rows: 5, hint: 'Three or four sentences. Plain. No adjectives you would not say out loud.' }) + '</fieldset>';
     if (d.meas.length) {
       h += '<fieldset><legend><b>03</b> The facts</legend>' +
-        '<p class="pk-help">Centimetres and inches are the same number in two units, so one is worked out from the other. Clothing and shoe sizes are not: the scales disagree between makers, so only the ones you type are printed.</p>' + srcHtml(['sizes']) +
+        '<p class="pk-help">Centimetres and inches are the same number in two units, so one is worked out from the other. Clothing sizes are not: the same size measures differently from one maker to the next, so only the sizes you type are printed. Shoes too: type your size in each system you need.</p>' + srcHtml(['sizes', 'stats']) +
         selectF('Print lengths as', 'units', [['cm', 'Centimetres'], ['in', 'Inches'], ['both', 'Both, metric first']]);
       for (const key of d.meas) {
         const m = MEAS[key], id = 'm-' + key;
@@ -1961,7 +1961,7 @@ window.FL_FONTS = {
     const lead = { model: 'Four digitals for an agency, and your styled shots for the comp card and the portfolio.',
       dj: 'A live or booth shot at least 2000 pixels wide, and the photographs for your comp card and portfolio.',
       performer: 'A recent colour headshot that looks like you today, and full length and performance shots for your comp card and portfolio.',
-      creative: 'Twelve to thirty of your best, in one line of work, in the order you want them seen.',
+      creative: 'Fifteen to thirty of your best, in one line of work, in the order you want them seen.',
       other: 'Your best work, in the order you want it seen.' }[d];
     h += '<fieldset><legend><b>01</b> Photographs</legend><p class="pk-help">' + esc(lead) + ' They are read in this browser and stay in it. Nothing is uploaded.</p><div class="pk-photos" id="pk-drop">';
     S.photos.forEach((p, i) => {
@@ -2153,7 +2153,7 @@ window.FL_FONTS = {
     const lab = lcFirst(audLabel()), todo = reqs().filter(r => r.st !== 'ok').length, chip = $('#pk-ready');
     chip.innerHTML = todo ? '<b>' + todo + ' to do</b> for ' + esc(lab) : '<b>Ready</b> for ' + esc(lab);
     chip.classList.toggle('ready', !todo);
-    chip.setAttribute('aria-label', (todo ? todo + ' things to do before sending to ' : 'Ready to send to ') + lab + '. Show the list.');
+    chip.setAttribute('aria-label', (todo ? todo + (todo === 1 ? ' thing' : ' things') + ' to do before sending to ' : 'Ready to send to ') + lab + '. Show the list.');
     $('#pk-send').textContent = 'Export for ' + lab;
   }
   function render() {

@@ -28,7 +28,7 @@ Four layouts, six sets of type, six colour sets or your own. Nothing you export 
   online or off.
 - It never decides your rate. It does insist that a rate leaves with its terms.
 - It checks the shape of what you say, not whether it is true. Every fact is yours to stand behind.
-- It does not find you an agency. A real agency never charges you to sign you or to photograph you.
+- It does not find you an agency. A real agency never asks you for money up front, to sign you or to photograph you.
 
 ## Run it
 
