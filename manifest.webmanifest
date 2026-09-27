@@ -1,7 +1,7 @@
 {
   "name": "First Look",
   "short_name": "First Look",
-  "description": "Your comp card, portfolio and rate card from one set of facts, checked against what they ask of someone new.",
+  "description": "Free for new models, DJs, dancers and photographers: your portfolio, comp card and rate card, checked against what agencies and promoters want. No uploads.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
