@@ -1,0 +1,1885 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>First Look</title>
+<style>
+  /* standalone:start (page chrome for the single-file version; an embedded build leaves this out) */
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  html,body{margin:0;background:#0C0B09}
+  /* standalone:end */
+  /* The chrome below is the ASurekha identity: it is the tool's, not the user's. Everything the user
+     exports is drawn from their own chosen template, type and colours, and carries none of it. */
+  #pk-app{
+    --bg:#0C0B09; --panel:#12110E; --panel2:#191713; --line:rgba(245,241,232,.16);
+    --text:#F5F1E8; --muted:#A39E93; --accent:#FF4D00; --lift:#FF6A21; --ok:#8BD17C; --bad:#FF6A21; --warn:#E8C170;
+    --f-body:Archivo,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --f-mono:'IBM Plex Mono',Menlo,Consolas,monospace;
+    --f-disp:Unbounded,'Arial Black',Arial,sans-serif;
+    min-height:var(--pk-h,100vh);display:flex;flex-direction:column;background:var(--bg);color:var(--text);
+    font:14px/1.5 var(--f-body);text-align:left;position:relative
+  }
+  #pk-app *,#pk-app *::before,#pk-app *::after{box-sizing:border-box}
+  #pk-app button,#pk-app input,#pk-app select,#pk-app textarea{font:inherit;color:inherit}
+  #pk-app :focus-visible{outline:2px solid var(--lift);outline-offset:2px}
+  #pk-app .mono{font-family:var(--f-mono)}
+  #pk-app .disp{font-family:var(--f-disp);font-weight:800;text-transform:uppercase;letter-spacing:.01em}
+  #pk-app .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  #pk-app .pk-top{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  #pk-app .pk-title{font-size:15px;white-space:nowrap}
+  #pk-app .pk-title span{color:var(--lift)}
+  #pk-app .pk-tag{color:var(--muted);font-size:12.5px;max-width:46ch;margin:0}
+  #pk-app .pk-tabs{display:flex;gap:6px;flex-wrap:wrap}
+  #pk-app .pk-tabbar{display:flex;gap:10px;align-items:center;padding:12px 20px;flex-wrap:wrap}
+  #pk-app .pk-tab{background:none;border:1px solid var(--line);padding:8px 13px;cursor:pointer;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase}
+  #pk-app .pk-tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#0C0B09;font-weight:600}
+  #pk-app .pk-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  #pk-app .pk-btn{background:var(--panel2);border:1px solid var(--line);padding:8px 12px;cursor:pointer;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  #pk-app .pk-btn:hover{border-color:var(--lift)}
+  #pk-app .pk-btn.primary{background:var(--accent);border-color:var(--accent);color:#0C0B09;font-weight:600}
+  #pk-app .pk-btn:disabled{opacity:.45;cursor:not-allowed}
+  #pk-app .pk-ready{background:none;border:1px solid var(--bad);color:var(--text);padding:7px 11px;cursor:pointer;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em}
+  #pk-app .pk-ready.ready{border-color:var(--ok)}
+  #pk-app .pk-ready b{color:var(--bad);font-weight:600}
+  #pk-app .pk-ready.ready b{color:var(--ok)}
+
+  #pk-app .pk-main{display:grid;grid-template-columns:minmax(360px,540px) 1fr;flex:1;min-height:0;border-top:1px solid var(--line)}
+  #pk-app .pk-form{padding:18px 20px 40px;border-right:1px solid var(--line);overflow:auto}
+  #pk-app .pk-preview{padding:24px;overflow:auto;position:sticky;top:0;max-height:100vh;align-self:start;background:
+    repeating-linear-gradient(45deg,transparent 0 10px,rgba(245,241,232,.025) 10px 11px)}
+  #pk-app fieldset{border:1px solid var(--line);padding:14px 14px 12px;margin:0 0 14px;min-width:0}
+  #pk-app legend{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);padding:0 6px}
+  #pk-app legend b{color:var(--text);margin-right:6px;font-weight:600}
+  #pk-app .pk-help{color:var(--muted);font-size:12.5px;margin:0 0 10px}
+  #pk-app .pk-help b{color:var(--text);font-weight:500}
+  #pk-app label{display:block;font-size:12px;color:var(--muted);margin:8px 0 3px}
+  #pk-app input[type=text],#pk-app input[type=date],#pk-app input[type=url],#pk-app input[type=email],#pk-app input[inputmode=decimal],#pk-app input[inputmode=numeric],#pk-app select,#pk-app textarea{
+    width:100%;background:var(--bg);border:1px solid var(--line);padding:7px 9px;border-radius:0}
+  #pk-app textarea{min-height:60px;resize:vertical;line-height:1.5}
+  #pk-app .pk-f{min-width:0}
+  #pk-app .pk-f label{margin-top:8px}
+  #pk-app .pk-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #pk-app .pk-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  #pk-app .pk-meas{display:grid;grid-template-columns:1fr 92px 1fr;gap:8px;align-items:end;margin-bottom:6px}
+  #pk-app .pk-meas .drv{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);padding-bottom:8px}
+  #pk-app .pk-list{list-style:none;margin:0;padding:0}
+  #pk-app .pk-list li{margin-bottom:6px}
+  #pk-app .pk-inline{display:flex;gap:6px}
+  #pk-app .pk-inline input{flex:1}
+  #pk-app .pk-x{background:none;border:1px solid var(--line);width:34px;min-width:34px;min-height:32px;cursor:pointer;color:var(--muted)}
+  #pk-app .pk-x:hover{color:var(--lift);border-color:var(--lift)}
+  #pk-app .pk-x:disabled{opacity:.35;cursor:not-allowed}
+  #pk-app .pk-add{background:none;border:1px dashed var(--line);padding:6px 10px;cursor:pointer;font-size:12.5px;color:var(--muted);width:100%}
+  #pk-app .pk-add:hover{color:var(--text);border-color:var(--lift)}
+  #pk-app .pk-flag{border-left:2px solid var(--bad);padding:5px 0 5px 9px;margin:4px 0 8px;font-size:12px;color:var(--muted)}
+  #pk-app .pk-flag b{color:var(--text);font-weight:500}
+  #pk-app .pk-flag button{background:none;border:1px solid var(--line);padding:3px 8px;cursor:pointer;font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-top:5px}
+  #pk-app .pk-block{border:1px solid var(--bad);padding:9px 11px;font-size:12.5px;margin:10px 0}
+  #pk-app .pk-block b{color:var(--lift)}
+  #pk-app .pk-rate{border:1px solid var(--line);padding:11px;margin-bottom:9px;background:var(--panel)}
+  #pk-app .pk-rate .hd{display:grid;grid-template-columns:1.5fr .9fr 34px;gap:8px;align-items:end}
+  #pk-app .pk-photos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #pk-app .pk-ph{border:1px solid var(--line);padding:9px;background:var(--panel);min-width:0}
+  #pk-app .pk-ph .thumb{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--panel2);display:block;margin-bottom:7px}
+  #pk-app .pk-ph .dpi{font-family:var(--f-mono);font-size:11px;color:var(--ok);margin-top:6px}
+  #pk-app .pk-ph .dpi.bad{color:var(--bad)}
+  #pk-app .pk-ph select{padding:5px 7px;font-size:12px}
+  #pk-app .pk-ph label{margin:6px 0 2px}
+  #pk-app .pk-ph input[type=range]{width:100%;accent-color:var(--accent)}
+  #pk-app .pk-drop{border:1px dashed var(--line);padding:16px;text-align:center;color:var(--muted);font-size:12.5px;grid-column:1/-1}
+  #pk-app .pk-drop.on{border-color:var(--lift);color:var(--text)}
+
+  /* who it is for: the recipient, what they want, and whether this is ready */
+  #pk-app .pk-aud{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+  #pk-app .pk-audbtn{background:var(--panel);border:1px solid var(--line);padding:10px 11px;cursor:pointer;text-align:left}
+  #pk-app .pk-audbtn b{display:block;font-weight:500;font-size:13px;color:var(--text)}
+  #pk-app .pk-audbtn span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+  #pk-app .pk-audbtn[aria-pressed="true"],#pk-app .pk-outbtn[aria-pressed="true"]{border-color:var(--lift);box-shadow:inset 0 0 0 1px var(--lift)}
+  #pk-app .pk-outs{display:flex;flex-wrap:wrap;gap:6px}
+  #pk-app .pk-outbtn{background:var(--panel);border:1px solid var(--line);padding:8px 11px;cursor:pointer;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  #pk-app .pk-verdict{border:1px solid var(--bad);padding:10px 12px;margin:0 0 10px;font-size:13.5px}
+  #pk-app .pk-verdict.ready{border-color:var(--ok)}
+  #pk-app .pk-verdict b{font-weight:600}
+  #pk-app .pk-reqs{list-style:none;margin:0;padding:0}
+  #pk-app .pk-req{border:1px solid var(--line);padding:10px 11px;margin-bottom:7px;background:var(--panel)}
+  #pk-app .pk-req .top{display:flex;gap:10px;align-items:flex-start}
+  #pk-app .pk-req .st{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;min-width:60px;padding-top:2px}
+  #pk-app .pk-req.ok .st{color:var(--ok)}
+  #pk-app .pk-req.miss .st{color:var(--bad)}
+  #pk-app .pk-req.ask .st{color:var(--warn)}
+  #pk-app .pk-req .need{font-size:13px;color:var(--text)}
+  #pk-app .pk-req.ok .need{color:var(--muted)}
+  #pk-app .pk-req .note{font-size:11.5px;color:var(--text);margin-top:3px;font-family:var(--f-mono);overflow-wrap:anywhere}
+  #pk-app .pk-req details{margin-top:5px}
+  #pk-app .pk-req summary{cursor:pointer;font-size:12px;color:var(--muted)}
+  #pk-app .pk-req .why{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+  #pk-app .pk-how{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--muted)}
+  #pk-app .pk-how li{margin-bottom:4px}
+  #pk-app .src{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin:7px 0 0}
+  #pk-app .src a{color:var(--lift)}
+  #pk-app .pk-sendlist{list-style:none;margin:0 0 4px;padding:0}
+  #pk-app .pk-sendlist li{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--panel);padding:8px 10px;margin-bottom:6px;flex-wrap:wrap}
+  #pk-app .pk-sendlist .nm{font-size:13px;color:var(--text);min-width:110px}
+  #pk-app .pk-sendlist .nt{font-family:var(--f-mono);font-size:11.5px;color:var(--ok);flex:1}
+  #pk-app .pk-sendlist .nt.off{color:var(--muted)}
+  #pk-app .pk-never{border-color:var(--warn)}
+  #pk-app .pk-never legend{color:var(--warn)}
+
+  /* the style pickers: every one shows the thing itself, never a word for it */
+  #pk-app .pk-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:4px}
+  #pk-app .pk-sw{border:1px solid var(--line);background:var(--panel);padding:0;cursor:pointer;text-align:left;overflow:hidden}
+  #pk-app .pk-sw[aria-pressed="true"]{border-color:var(--lift);box-shadow:inset 0 0 0 1px var(--lift)}
+  #pk-app .pk-sw canvas{display:block;width:100%;height:auto}
+  #pk-app .pk-sw .nm{display:block;padding:5px 7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  #pk-app .pk-sw[aria-pressed="true"] .nm{color:var(--text)}
+  #pk-app .pk-contrast{font-family:var(--f-mono);font-size:11.5px;margin-top:8px;color:var(--ok)}
+  #pk-app .pk-contrast.bad{color:var(--bad)}
+  #pk-app .pk-colrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+  #pk-app .pk-colrow input[type=color]{width:100%;height:34px;padding:2px;background:var(--bg);border:1px solid var(--line)}
+  #pk-app .pk-foot{padding:10px 20px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;display:flex;gap:18px;flex-wrap:wrap}
+  #pk-app .pk-foot b{color:var(--text);font-weight:500}
+  #pk-app .pk-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--lift);padding:8px 14px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+  #pk-app .pk-toast.on{opacity:1}
+  #pk-app .pk-sheets{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+  #pk-app figure.pk-out{margin:0}
+  #pk-app figure.pk-out figcaption{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+  #pk-app canvas.pk-canvas{display:block;box-shadow:0 12px 40px rgba(0,0,0,.5);max-width:100%;height:auto;background:#fff}
+  #pk-app .pk-paste{width:100%;min-height:340px;background:var(--panel);border:1px solid var(--line);padding:12px;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;margin:0}
+  #pk-app .pk-copyrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  #pk-app .pk-over{font-family:var(--f-mono);font-size:12px;color:var(--bad);margin-top:10px}
+  #pk-app .pk-note{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:14px}
+  @media (max-width:980px){
+    #pk-app .pk-main{grid-template-columns:1fr}
+    #pk-app .pk-form{border-right:0;border-bottom:1px solid var(--line)}
+    #pk-app .pk-preview{padding:16px;position:static;max-height:none}
+    #pk-app .pk-row,#pk-app .pk-row3,#pk-app .pk-photos,#pk-app .pk-aud{grid-template-columns:1fr}
+    #pk-app .pk-meas{grid-template-columns:1fr 84px}
+    #pk-app .pk-meas .drv{grid-column:1/-1;padding:0 0 4px}
+  }
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0C0B09">
+<meta name="description" content="Your comp card, portfolio and rate card from one set of facts, checked against what an agency or promoter asks of someone new. Free, nothing uploaded.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<script>
+  // Offline install: only meaningful from a web address (a file opened from disk already works offline).
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+</script>
+</head>
+<body>
+<div id="pk-app">
+  <div class="pk-top">
+    <div class="pk-title disp" id="pk-name">First Look<span>_</span></div>
+    <p class="pk-tag">Your portfolio, comp card and rate card, from one set of facts. Tell it who you are sending to and it checks what they want from someone new.</p>
+    <div class="pk-actions" style="margin-left:auto">
+      <button type="button" class="pk-ready" id="pk-ready"></button>
+      <button type="button" class="pk-btn primary" id="pk-send">Export</button>
+    </div>
+  </div>
+  <div class="pk-tabbar">
+    <div class="pk-tabs" role="tablist" aria-label="What to work on">
+      <button class="pk-tab" role="tab" id="tab-aim" aria-controls="pane-form" data-tab="aim" aria-selected="true">Who it's for</button>
+      <button class="pk-tab" role="tab" id="tab-book" aria-controls="pane-form" data-tab="book" aria-selected="false">The facts</button>
+      <button class="pk-tab" role="tab" id="tab-photos" aria-controls="pane-form" data-tab="photos" aria-selected="false">Photographs</button>
+      <button class="pk-tab" role="tab" id="tab-rates" aria-controls="pane-form" data-tab="rates" aria-selected="false">Rates</button>
+      <button class="pk-tab" role="tab" id="tab-style" aria-controls="pane-form" data-tab="style" aria-selected="false">Make it yours</button>
+      <button class="pk-tab" role="tab" id="tab-preview" aria-controls="pane-form" data-tab="preview" aria-selected="false">See and export</button>
+    </div>
+  </div>
+
+  <div class="pk-main">
+    <div class="pk-form" id="pane-form" role="tabpanel" aria-labelledby="tab-aim"></div>
+    <div class="pk-preview" id="pane-preview" role="region" aria-label="Preview" tabindex="0" aria-live="polite"></div>
+  </div>
+
+  <div class="pk-foot">
+    <span><b>Nothing is uploaded.</b> Photos and measurements stay in this browser.</span>
+    <span><b>It checks the shape, never the truth.</b> Every fact here is yours to stand behind.</span>
+    <span id="pk-status" class="mono"></span>
+  </div>
+  <div class="pk-toast" id="pk-toast" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const TITLE = 'First Look';           // the one line a rename touches
+  const $ = s => document.querySelector(s);
+  const el = (t, a, h) => { const n = document.createElement(t); if (a) for (const k in a) n.setAttribute(k, a[k]); if (h != null) n.innerHTML = h; return n; };
+  const KEY = 'pk.v2';
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const num = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : NaN; };
+  const f1 = n => (Math.round(n * 10) / 10).toString();
+  const uid = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const today = () => new Date().toISOString().slice(0, 10);
+  const fdate = iso => { if (!iso) return ''; const d = new Date(iso + 'T00:00:00'); return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }); };
+  const slug = s => (s || TITLE).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'file';
+  const has = v => !!String(v ?? '').trim();
+  const wc = s => String(s || '').trim().split(/\s+/).filter(Boolean).length;
+  const lcFirst = s => s.charAt(0).toLowerCase() + s.slice(1);
+
+  /* ================= what a discipline asks for ================= */
+  const MEAS = {
+    height: { label: 'Height', kind: 'len', feet: true, stat: '' },
+    bust:   { label: 'Bust or chest', kind: 'len', stat: '' },
+    waist:  { label: 'Waist', kind: 'len', stat: '' },
+    hips:   { label: 'Hips', kind: 'len', stat: '' },
+    inseam: { label: 'Inside leg', kind: 'len', stat: 'inside leg %' },
+    collar: { label: 'Collar', kind: 'len', stat: 'collar %' },
+    dress:  { label: 'Dress size', kind: 'size', stat: 'dress %' },
+    suit:   { label: 'Suit size', kind: 'size', stat: 'suit %' },
+    shoe:   { label: 'Shoe', kind: 'size', stat: 'shoe %' },
+    hair:   { label: 'Hair', kind: 'text', stat: '% hair' },
+    eyes:   { label: 'Eyes', kind: 'text', stat: '% eyes' },
+  };
+  const DISC = {
+    model: { label: 'Model', meas: ['height', 'bust', 'waist', 'hips', 'dress', 'shoe', 'hair', 'eyes'],
+      repLabel: 'Agency or board', pitchAsk: 'One line on the work you want to be booked for. Not a slogan.',
+      pitchEg: 'Commercial and editorial, Amsterdam based, works in English and Dutch.',
+      hiLabel: 'Work worth naming', hiEg: 'Campaign for a Dutch department store, spring 2025.',
+      techLabel: '', ratesTitle: 'Day rate and usage' },
+    dj: { label: 'DJ or musician', meas: [],
+      repLabel: 'Booking agent or management', pitchAsk: 'Your sound in one line. Twenty words at most, and be specific.',
+      pitchEg: 'Melodic house and breaks, vinyl and CDJ, 120 to 128 bpm, long sets.',
+      hiLabel: 'Shows and releases worth naming', hiEg: 'Opened the main floor at Lowlands in 2025.',
+      techLabel: 'What you need in the booth', ratesTitle: 'Booking fee',
+      extraAsk: [['sets', 'Set length you play', 'Two hours, or four for an extended set'], ['bpm', 'Tempo range', '120 to 128 bpm'], ['resident', 'Residency', 'Monthly at a club, name it']] },
+    performer: { label: 'Dancer, actor or performer', meas: ['height', 'bust', 'waist', 'hips', 'dress', 'suit', 'shoe', 'hair', 'eyes'],
+      repLabel: 'Agent or union', pitchAsk: 'One line on what you are cast for.',
+      pitchEg: 'Contemporary and commercial dance, partner work, speaks English and Malay.',
+      hiLabel: 'Credits worth naming', hiEg: 'Ensemble in a national tour, 2024.',
+      techLabel: 'Skills and training', ratesTitle: 'Rates',
+      extraAsk: [['skills', 'Skills', 'Tap, aerial, stage combat, driving licence'], ['training', 'Training', 'School and years']] },
+    creative: { label: 'Photographer or creative', meas: [],
+      repLabel: 'Studio or representation', pitchAsk: 'One line on what you make and who for.',
+      pitchEg: 'Still life and food photography for food brands and restaurants.',
+      hiLabel: 'Work worth naming', hiEg: 'Menu photography for a restaurant group, 2025.',
+      techLabel: 'Kit and setup', ratesTitle: 'Rates and usage',
+      extraAsk: [['services', 'What you offer', 'Shoot days, half days, retouching'], ['turnaround', 'Turnaround', 'Selects in 48 hours, finals in a week']] },
+    other: { label: 'Something else', meas: [],
+      repLabel: 'Representation', pitchAsk: 'One line on the work.', pitchEg: '',
+      hiLabel: 'Work worth naming', hiEg: '', techLabel: 'Anything a booker needs to know', ratesTitle: 'Rates' },
+  };
+  const TRIMS = {
+    a5: { label: 'A5, 148 × 210 mm', w: 148, h: 210 },
+    us: { label: 'US comp card, 5.5 × 8.5 in', w: 139.7, h: 215.9 },
+    small: { label: '4 × 6 in', w: 101.6, h: 152.4 },
+  };
+  const PAPERS = { a4: { label: 'A4', w: 210, h: 297 }, letter: { label: 'Letter', w: 215.9, h: 279.4 } };
+
+  /* ================= who it is for: what each side asks of someone new =================
+     Every rule the check applies carries a source, shown beside it, and no number here is made up.
+     Sources checked on 27 September 2026. */
+  const SRC = {
+    digitals:  ['How to take modelling digitals, Petite Model Guide', 'https://petitemodelguide.com/how-to-take-modeling-digitals-get-signed/'],
+    digitals2: ['Model digitals: what agencies expect, The Light Committee', 'https://thelightcommittee.com/blog/model-digitals-nyc-what-agencies-expect/'],
+    stats:     ['Model measurements, The Model Guide', 'https://themodelguide.com/guides/model-measurements'],
+    compcard:  ['What a comp card is, Get Scouted', 'https://www.getscouted.co/articles/what-is-a-comp-card'],
+    minors:    ['Working with minors and releases, LegalZoom', 'https://www.legalzoom.com/articles/the-basics-working-with-kids-and-model-release-forms'],
+    scams:     ['Modelling scams, Model Alliance', 'https://www.modelalliance.org/modeling-scams'],
+    scams2:    ['Legitimate or scam agencies, Get Scouted', 'https://www.getscouted.co/articles/legitimate-vs-scam-modeling-agencies'],
+    djkit:     ['What promoters want in a press kit, Backstage.dj', 'https://backstage.dj/blog/what-is-a-dj-presskit'],
+    djgigs:    ['How to get DJ gigs in 2026, booking-agent.io', 'https://booking-agent.io/blog/how-to-get-dj-gigs-in-2026/'],
+    paytoplay: ['Pay-to-play is not OK, Mixmag', 'https://mixmag.net/feature/pay-to-play-is-not-ok-stop'],
+    headshots: ['Actor headshots, Backstage', 'https://www.backstage.com/magazine/article/headshots-everything-need-know-5052/'],
+    casting:   ['What casting directors look for, IPM Acting Academy', 'https://www.ipmaa.com/ipm-blog/what-casting-directors-look-for-in-headshots-showreels-and-spotlight-cvs-a-guide-for-screen-actors-starting-out'],
+    showreel:  ['Showreel, Wikipedia', 'https://en.wikipedia.org/wiki/Showreel'],
+    folio:     ['A portfolio that gets you hired, Fstoppers', 'https://fstoppers.com/business/how-build-photography-portfolio-gets-hired-902136'],
+    folio2:    ['Mistakes that make a portfolio look unprofessional, Fstoppers', 'https://fstoppers.com/business/11-mistakes-make-portfolio-look-unprofessional-903158'],
+    rates:     ['Rate cards and pricing, InfluenceFlow', 'https://influenceflow.io/resources/rate-cards-and-pricing-structure-the-complete-2026-guide/'],
+    sizes:     ['UK fashion sizing study, Tellar', 'https://www.tellar.co.uk/the-first-comprehensive-independent-study-of-uk-fashion-sizing-accuracy-published-october-2025'],
+  };
+  const AUD = {
+    model:     { agency: { label: 'A model agency', blurb: 'Getting signed' }, client: { label: 'A client, booking you direct', blurb: 'Freelance work' } },
+    dj:        { promoter: { label: 'A promoter or venue', blurb: 'A slot on a night' }, agent: { label: 'A booking agency', blurb: 'Representation, usually later' } },
+    performer: { casting: { label: 'A casting director or agent', blurb: 'An audition or representation' } },
+    creative:  { client: { label: 'A brand or client', blurb: 'A commission' }, ad: { label: 'An agency or art director', blurb: 'Getting on their list' } },
+    other:     { client: { label: 'A client', blurb: 'A booking' } },
+  };
+  const KINDS = {
+    model:     [['headshot', 'Digital: headshot'], ['three', 'Digital: three-quarter'], ['profile', 'Digital: profile'], ['full', 'Digital: full length'], ['styled', 'Styled or editorial']],
+    dj:        [['live', 'Live or in the booth'], ['press', 'Press portrait']],
+    performer: [['headshot', 'Headshot'], ['full', 'Full length'], ['action', 'In performance']],
+    creative:  [['work', 'A piece of work']],
+    other:     [['work', 'A piece of work']],
+  };
+  const FALLBACK_KIND = { model: 'styled', dj: 'press', performer: 'action', creative: 'work', other: 'work' };
+  const KIND_LABEL = { headshot: 'Headshot', three: 'Three-quarter', profile: 'Profile', full: 'Full length', styled: 'Styled or editorial',
+    live: 'Live or in the booth', press: 'Press portrait', action: 'In performance', work: 'A piece of work' };
+  const DIGI = ['headshot', 'three', 'profile', 'full'];
+  // The portfolio, the comp card and the rate card are the core of the tool, for everyone. They lead
+  // every list and go in every export. What a recipient asks for first sits alongside them as
+  // guidance; it never filters them out.
+  const CORE = ['portfolio', 'card', 'rates'];
+  const OUTS = {
+    model: [...CORE, 'digitals', 'sheet', 'paste'],
+    dj: [...CORE, 'sheet', 'paste'],
+    performer: [...CORE, 'sheet', 'paste'],
+    creative: [...CORE, 'sheet', 'paste'],
+    other: [...CORE, 'sheet', 'paste'],
+  };
+  const OUT_LABEL = { digitals: 'Digitals', card: 'Comp card', sheet: 'One sheet', portfolio: 'Portfolio', rates: 'Rate card', paste: 'Paste block', headshot: 'Headshot' };
+  // `first` is what this recipient asks for before anything else; it leads the file. The core three follow
+  // in the same file whenever you have made them.
+  const SENDS = {
+    model: {
+      agency: { first: ['digitals'], say: 'Lead with the digitals sheet, and paste your stats into their form: plain photographs are what an agency looks at first in a new face.' },
+      client: { first: ['card'], say: 'Lead with the comp card, the format a client compares like with like.' },
+    },
+    dj: {
+      promoter: { first: ['sheet'], say: 'Lead with the one sheet, and put your mix link in the first line of the email. They check it on a phone, so keep the file small.' },
+      agent: { first: ['sheet'], say: 'Lead with the one sheet, and list your mixes in the email.' },
+    },
+    performer: { casting: { first: ['headshot', 'sheet'], say: 'Lead with your headshot as a JPG and the one sheet as your CV, and put your reel link in the email.' } },
+    creative: {
+      client: { first: ['portfolio'], say: 'Lead with your portfolio: the work you want to be hired for.' },
+      ad: { first: ['portfolio', 'sheet'], say: 'Lead with your portfolio and your one sheet.' },
+    },
+    other: { client: { first: ['sheet'], say: 'Lead with your one sheet.' } },
+  };
+  const NEVER = {
+    model: { head: 'What a real agency never asks for', text: 'Money. A real agency does not charge you to sign you, to photograph you, to train you or to hold your place. It earns a commission on the work it books for you, after the client has paid.', src: ['scams', 'scams2'] },
+    dj: { head: 'What a fair promoter never asks for', text: 'A ticket quota as the price of the slot. If you have to buy or sell tickets to earn your set, the promoter is paid whether anyone comes or not. That is pay-to-play.', src: ['paytoplay'] },
+  };
+  const DIGITALS_HOW = [
+    'A plain white or light wall, in bright daylight: face a window, or stand outside in the shade.',
+    'No filter and no editing. Hardly any make-up: concealer and lip balm at most. Hair as it falls.',
+    'A fitted black top and jeans, so they can see your shape.',
+    'Hold the phone upright. Headshot: phone at nose height, about half a metre away, chest to the top of your head.',
+    'Three-quarter: mid-thigh to the top of your head. Profile: fully side on. Full length: head to toe, phone at waist height, far enough back that you do not tilt it.',
+    'Use the self-timer and a tripod, or a friend. Take several of each and keep the plainest.',
+  ];
+
+  /* ================= make it yours: templates, type, colour ================= */
+  const TEMPLATES = {
+    bar:    { label: 'Bar',    note: 'A full photograph with your name on a solid band. The standard, and the one that reads face down on a pile.' },
+    frame:  { label: 'Frame',  note: 'The photograph sits inside the paper with your name below it. Quieter, more editorial.' },
+    split:  { label: 'Split',  note: 'Photograph above, a solid block below carrying your name and where to reach you.' },
+    corner: { label: 'Corner', note: 'A full photograph with your name set small in the corner. The photograph does the work.' },
+  };
+  // Every family here is on Google Fonts and loads in one request per pairing. Unbounded is deliberately
+  // absent: it is the ASurekha wordmark face and does not belong on someone else's card.
+  const TYPES = {
+    plain:     { label: 'Plain',     disp: 'Archivo', dw: '700', body: 'Archivo', mono: '"IBM Plex Mono"', track: .06, caps: true,
+                 g: 'Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600' },
+    fashion:   { label: 'Fashion',   disp: '"Bodoni Moda"', dw: '700', body: 'Jost', mono: 'Jost', track: .14, caps: true,
+                 g: 'Bodoni+Moda:wght@400;700&family=Jost:wght@300;400;500' },
+    grotesque: { label: 'Grotesque', disp: '"Space Grotesk"', dw: '700', body: '"Space Grotesk"', mono: '"Space Mono"', track: .03, caps: true,
+                 g: 'Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700' },
+    club:      { label: 'Club',      disp: 'Anton', dw: '400', body: 'Archivo', mono: '"IBM Plex Mono"', track: .02, caps: true,
+                 g: 'Anton&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500' },
+    quiet:     { label: 'Quiet',     disp: 'Fraunces', dw: '600', body: 'Lora', mono: '"IBM Plex Mono"', track: .01, caps: false,
+                 g: 'Fraunces:opsz,wght@9..144,600&family=Lora:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500' },
+    system:    { label: 'System',    disp: 'system-ui', dw: '700', body: 'system-ui', mono: 'ui-monospace', track: .05, caps: true, g: '' },
+  };
+  const PALETTES = {
+    ink:   { label: 'Ink',   paper: '#F5F1E8', ink: '#14120F', accent: '#14120F' },
+    white: { label: 'White', paper: '#FFFFFF', ink: '#111111', accent: '#111111' },
+    night: { label: 'Night', paper: '#121212', ink: '#F2F0EC', accent: '#F2F0EC' },
+    warm:  { label: 'Warm',  paper: '#F3EAE0', ink: '#2A211B', accent: '#B4552D' },
+    cool:  { label: 'Cool',  paper: '#EDF1F4', ink: '#101A21', accent: '#2F6D8C' },
+    custom:{ label: 'Yours', paper: '#FFFFFF', ink: '#111111', accent: '#C0392B' },
+  };
+  const hex2rgb = h => { const s = h.replace('#', ''); const v = s.length === 3 ? s.split('').map(c => c + c).join('') : s; return [0, 2, 4].map(i => parseInt(v.slice(i, i + 2), 16)); };
+  const lum = h => { const c = hex2rgb(h).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; };
+  const contrast = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + .05) / (Math.min(l1, l2) + .05); };
+  const mix = (h, a) => { const [r, g, b] = hex2rgb(h); return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'; };
+
+  /* ================= state ================= */
+  const DEFAULTS = () => ({
+    v: 2,
+    disc: 'model', units: 'cm',
+    aim: { to: 'agency' }, out: 'digitals',
+    trim: 'a5', bleed: true, paper: 'a4',
+    style: { template: 'bar', type: 'plain', palette: 'ink', custom: { paper: '#FFFFFF', ink: '#111111', accent: '#C0392B' }, upper: true },
+    who: { name: '', based: '', rep: '', repContact: '', email: '', phone: '', site: '', age: '', guardian: '' },
+    meas: {}, extra: [],
+    pitch: '', bio: '',
+    highlights: [], dismissed: {},
+    links: [], tech: '', asks: {},
+    currency: '€',
+    rates: [], terms: { included: '', excluded: '', usage: '', payment: '', travel: '', holds: '30', from: '' },
+    photos: [],
+  });
+  let S = DEFAULTS(), tab = 'aim', shots = new Map(), toastT, saveT;
+
+  function merge(base, over) {
+    for (const k in over) {
+      if (over[k] && typeof over[k] === 'object' && !Array.isArray(over[k]) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) merge(base[k], over[k]);
+      else base[k] = over[k];
+    }
+    return base;
+  }
+  function save() { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { toast('This browser will not save any more. Use Save to a file.'); } }, 150); }
+  function get(p) { return p.split('.').reduce((o, k) => (o == null ? undefined : o[k]), S); }
+  function set(p, v) { const ks = p.split('.'); let o = S; for (const k of ks.slice(0, -1)) o = o[k]; o[ks[ks.length - 1]] = v; }
+  function toast(m) { const t = $('#pk-toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
+  const status = m => { $('#pk-status').textContent = m; };
+  const pal = () => S.style.palette === 'custom' ? Object.assign({ label: 'Yours' }, S.style.custom) : PALETTES[S.style.palette];
+  const typ = () => TYPES[S.style.type] || TYPES.plain;
+  const nameText = () => { const n = (S.who.name || 'Your name').trim(); return S.style.upper ? n.toUpperCase() : n; };
+  const audOf = () => AUD[S.disc][S.aim.to] || Object.values(AUD[S.disc])[0];
+  const audLabel = () => audOf().label;
+  const send = () => SENDS[S.disc][S.aim.to] || Object.values(SENDS[S.disc])[0];
+  // Switching what you do never rewrites a photograph's label: someone trying the options would
+  // otherwise lose their digitals. A label from another discipline stays, and shows as itself.
+  function normalise() {
+    if (!AUD[S.disc][S.aim.to]) S.aim.to = Object.keys(AUD[S.disc])[0];
+    if (!OUTS[S.disc].includes(S.out)) S.out = OUTS[S.disc][0];
+  }
+
+  /* ================= photos ================= */
+  let idbOk = true;
+  const IDB = (() => {
+    const mem = new Map(); let dbp;
+    const open = () => dbp || (dbp = new Promise((res, rej) => {
+      let r; try { r = indexedDB.open('pk-photos', 1); } catch (e) { return rej(e); }
+      r.onupgradeneeded = () => r.result.createObjectStore('b');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+      setTimeout(() => rej(new Error('timeout')), 4000);
+    }).catch(e => { idbOk = false; throw e; }));
+    const tx = async (mode, fn) => { const db = await open(); return new Promise((res, rej) => { const t = db.transaction('b', mode), q = fn(t.objectStore('b')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }); };
+    return {
+      put: async (k, v) => { mem.set(k, v); try { await tx('readwrite', s => s.put(v, k)); } catch (e) { idbOk = false; } },
+      get: async k => { try { const v = await tx('readonly', s => s.get(k)); if (v) return v; } catch (e) { idbOk = false; } return mem.get(k); },
+      del: async k => { mem.delete(k); try { await tx('readwrite', s => s.delete(k)); } catch (e) { idbOk = false; } },
+    };
+  })();
+  const ofKind = k => S.photos.filter(p => p.kind === k);
+  // a new model uploading headshot, three-quarter, profile, full length in that order gets them labelled
+  function nextKind() {
+    if (S.disc === 'model') return DIGI.find(k => !ofKind(k).length) || 'styled';
+    return KINDS[S.disc][0][0];
+  }
+  async function addFiles(files) {
+    for (const f of files) {
+      if (!/^image\//.test(f.type)) { toast('That file is not an image.'); continue; }
+      const id = uid();
+      try {
+        const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' });
+        await IDB.put(id, f); shots.set(id, bmp);
+        S.photos.push({ id, name: f.name, credit: '', caption: '', plain: false, kind: nextKind(), w: bmp.width, h: bmp.height,
+          role: S.photos.some(p => p.role === 'front') ? 'back' : 'front', fx: 50, fy: 40 });
+      } catch (e) { toast('That image could not be read.'); }
+    }
+    save(); render();
+  }
+  async function rehydrate() {
+    for (const p of S.photos.slice()) {
+      try {
+        const blob = await IDB.get(p.id);
+        if (!blob) { S.photos = S.photos.filter(q => q.id !== p.id); continue; }
+        shots.set(p.id, await createImageBitmap(blob, { imageOrientation: 'from-image' }));
+        if (!p.kind) p.kind = FALLBACK_KIND[S.disc];
+      } catch (e) { S.photos = S.photos.filter(q => q.id !== p.id); }
+    }
+  }
+  const front = () => S.photos.find(p => p.role === 'front');
+  const backs = () => S.photos.filter(p => p.role === 'back').slice(0, 5);
+  // the one photograph a sheet shows: a headshot for casting, a booth shot for a promoter
+  const sheetPhoto = () => S.disc === 'performer' ? (ofKind('headshot')[0] || front())
+    : S.disc === 'dj' ? (ofKind('live')[0] || ofKind('press')[0] || front()) : front();
+
+  /* ================= rule 2: units stated, lengths converted, sizes never ================= */
+  const CM_IN = 2.54;
+  function lenParts(cm) {
+    const n = num(cm); if (!isFinite(n) || n <= 0) return null;
+    const inches = n / CM_IN, ft = Math.floor(inches / 12), ri = Math.round(inches - ft * 12);
+    return { cm: n, in: inches, ftin: (ri === 12 ? (ft + 1) + ' ft' : ft + ' ft ' + ri + ' in') };
+  }
+  function lenText(cm, feet) {
+    const p = lenParts(cm); if (!p) return '';
+    const metric = f1(p.cm) + ' cm', imp = feet ? p.ftin : f1(p.in) + ' in';
+    return S.units === 'cm' ? metric : S.units === 'in' ? imp : metric + ' (' + imp + ')';
+  }
+  const sizeText = v => !v ? '' : ['eu', 'uk', 'us'].filter(k => (v[k] || '').trim()).map(k => k.toUpperCase() + ' ' + v[k].trim()).join(' / ');
+  function factRows() {
+    const out = [];
+    for (const k of DISC[S.disc].meas) {
+      const m = MEAS[k], v = S.meas[k];
+      const t = m.kind === 'len' ? lenText(v, m.feet) : m.kind === 'size' ? sizeText(v) : (v || '').trim();
+      if (t) out.push([m.label, t, m.stat ? m.stat.replace('%', t) : t]);
+    }
+    for (const e of S.extra) if ((e.label || '').trim() && (e.value || '').trim()) out.push([e.label.trim(), e.value.trim(), e.label.trim().toLowerCase() + ' ' + e.value.trim()]);
+    return out;
+  }
+  const statsLine = () => factRows().map(r => r[2]).join(', ');
+  const measMissing = keys => keys.filter(k => { const m = MEAS[k], v = S.meas[k]; return m.kind === 'size' ? !sizeText(v) : m.kind === 'len' ? !lenParts(v) : !has(v); });
+  const ageN = () => { const n = parseInt(S.who.age, 10); return isFinite(n) ? n : NaN; };
+  const minor = () => { const a = ageN(); return isFinite(a) && a < 18; };
+
+  /* ================= rule 3 and rule 4 ================= */
+  function yearFlags() {
+    const out = [], hasNum = s => /\d/.test(s), hasYear = s => /\b(19|20)\d{2}\b/.test(s);
+    S.highlights.forEach((h, i) => { const t = (h || '').trim(); if (t && hasNum(t) && !hasYear(t) && !S.dismissed['h' + i]) out.push({ key: 'h' + i, text: t }); });
+    const b = (S.bio || '').trim();
+    if (b && hasNum(b) && !hasYear(b) && !S.dismissed.bio) out.push({ key: 'bio', text: 'the bio' });
+    return out;
+  }
+  function rateBlocks() {
+    const out = [];
+    S.rates.forEach(r => { if ((r.amount || '').trim() && !(r.includes || '').trim()) out.push({ why: '"' + ((r.label || '').trim() || 'a rate') + '" does not say what the fee covers' }); });
+    if (S.rates.some(r => (r.amount || '').trim())) {
+      if (!(S.terms.payment || '').trim()) out.push({ why: 'nothing says how and when you get paid' });
+      if (!(S.terms.holds || '').trim()) out.push({ why: 'nothing says how long the rate holds' });
+      if (S.disc === 'creative' && !(S.terms.usage || '').trim()) out.push({ why: 'nothing says what usage is included, and this is work that gets used' });
+    }
+    return out;
+  }
+  const rateReady = () => S.rates.some(r => has(r.amount)) && !rateBlocks().length;
+
+  /* ================= the check: what this recipient wants, and whether it is here ================= */
+  const allLinks = () => S.links.filter(l => has(l.url));
+  const linksBy = re => allLinks().filter(l => re.test(l.url) || re.test(l.label || ''));
+  const shortUrl = u => String(u).replace(/^https?:\/\/(www\.)?/, '');
+  function reqs() {
+    const d = S.disc, to = S.aim.to, out = [];
+    const add = (need, why, res, more) => out.push(Object.assign({ need, why }, res, more || {}));
+    const ok = note => ({ st: 'ok', note: note || '' });
+    const miss = (note, go, focus) => ({ st: 'miss', note: note || '', go: go || 'book', focus });
+    const ask = (note, go) => ({ st: 'ask', note, go: go || 'photos' });
+    const contact = () => add('One way to reach you.', 'An email address, or a phone number that you answer.',
+      has(S.who.repContact) || has(S.who.email) || has(S.who.phone) ? ok() : miss('', 'book', 'f-who-email'));
+    const rate = () => add('Your rate, with its terms.', 'What the fee covers, what it does not, and how the work may be used, agreed before anyone argues about it.',
+      rateReady() ? ok() : miss(S.rates.some(r => has(r.amount)) ? 'It is blocked until its terms are in.' : 'No priced rate yet.', 'rates'), { src: ['rates'] });
+    const stats = (keys, need, why, src) => { const mm = measMissing(keys);
+      add(need, why, mm.length ? miss('Missing: ' + mm.map(k => MEAS[k].label.toLowerCase()).join(', ') + '.') : ok(), src ? { src } : null); };
+
+    if (d === 'model' && to === 'agency') {
+      const four = [['headshot', 'a headshot'], ['three', 'a three-quarter'], ['profile', 'a profile'], ['full', 'a full length']];
+      const gone = four.filter(([k]) => !ofKind(k).length).map(([, l]) => l);
+      add('Four digitals: a headshot, a three-quarter, a profile and a full length.',
+        'Agencies look at plain photographs first in a new face, before any styled shoot. They lead the file; your portfolio and comp card go behind them.',
+        gone.length ? miss('Still to take: ' + gone.join(', ') + '.', 'photos') : ok(), { how: DIGITALS_HOW, src: ['digitals', 'digitals2'] });
+      const digis = S.photos.filter(p => DIGI.includes(p.kind));
+      if (digis.length) {
+        const n = digis.filter(p => !p.plain).length;
+        add('Each one plain: a light wall, daylight, no filter, hardly any make-up.',
+          'Filters, heavy make-up and dramatic light hide exactly what they are looking at.',
+          n ? ask(n + ' not confirmed yet. Tick each one on the Photographs tab once it is.') : ok(), { src: ['digitals'] });
+      }
+      stats(['height', 'bust', 'waist', 'hips', 'shoe', 'hair', 'eyes'], 'Your stats, in the order they ask for them.',
+        'Height, bust or chest, waist, hips, shoe, hair and eyes, with units. It is the first line they read.', ['stats']);
+      add('Your age.', 'It decides what they can book you for, and whether a parent or guardian needs to be involved.',
+        isFinite(ageN()) ? ok() : miss('', 'book', 'f-who-age'));
+      if (minor()) add('A parent or guardian, named, with how to reach them.',
+        'Under 18 you cannot sign a contract yourself, so an agency needs a parent or guardian to sign, and usually to come to castings with you. The rules differ by country.',
+        has(S.who.guardian) ? ok() : miss('', 'book', 'f-who-guardian'), { src: ['minors'] });
+      contact();
+    } else if (d === 'model') {
+      add('A comp card: one photograph on the front, three to five on the back.', 'The format every booker compares like with like.',
+        front() && backs().length >= 3 ? ok() : miss(!front() ? 'No front photograph yet.' : backs().length + ' on the back so far.', 'photos'), { src: ['compcard'] });
+      stats(['height', 'bust', 'waist', 'hips', 'shoe', 'hair', 'eyes'], 'Your stats, with units.', 'On the back of the card, in the order they read them.', ['stats']);
+      rate(); contact();
+    } else if (d === 'dj') {
+      const mixes = linksBy(/soundcloud\.com|mixcloud\.com/i), files = linksBy(/drive\.google|dropbox|wetransfer|we\.tl/i);
+      if (to === 'promoter') add('One recent mix they can press play on.',
+        'It is the first thing they check, on a phone, in about thirty seconds. They decide on your sound, not on your list of venues.',
+        mixes.length ? ok(shortUrl(mixes[0].url)) : miss(files.length ? 'A download link does not get opened. Put the mix on SoundCloud or Mixcloud.' : 'Add a SoundCloud or Mixcloud link under Links.'), { src: ['djkit'] });
+      else add('Two to four recent mixes, including a warm-up and a peak-time set.',
+        'Each one labelled with the date and where it was played. An agency is judging your range, not one good night.',
+        mixes.length >= 2 ? ok(mixes.length + ' linked.') : miss(mixes.length + ' linked so far.'), { src: ['djkit'] });
+      const pw = wc(S.pitch);
+      add('Your sound in one line.', 'Genre, tempo and the kind of set, specific enough that they know where you fit on a night.',
+        !pw ? miss('', 'book', 'f-pitch') : pw > 20 ? miss(pw + ' words. Cut it to twenty or fewer.', 'book', 'f-pitch') : ok(), { src: ['djkit'] });
+      const bw = wc(S.bio);
+      add('A short bio, 50 to 100 words, with real places in it.',
+        'Venues and cities rather than adjectives. No big gigs yet? Say where you play now. An honest short bio beats an inflated one.',
+        !bw ? miss('', 'book', 'f-bio') : bw < 50 ? miss(bw + ' words. Say where you play, what, and for how long.', 'book', 'f-bio')
+          : bw > 100 ? miss(bw + ' words. Cut it: they skim.', 'book', 'f-bio') : ok(bw + ' words.'), { src: ['djkit'] });
+      if (to === 'promoter') add('Your Instagram or TikTok.', 'Most promoters look at your socials before they answer the email.',
+        linksBy(/instagram\.com|tiktok\.com/i).length ? ok() : miss('Add it under Links.'), { src: ['djgigs'] });
+      if (to === 'agent') add('Where you have played, with venues and cities.', 'Quality over quantity: the nights that show your sound, not every one.',
+        S.highlights.filter(has).length >= 2 ? ok() : miss(S.highlights.filter(has).length + ' so far.'), { src: ['djkit'] });
+      const widest = S.photos.reduce((m, p) => Math.max(m, p.w || 0), 0);
+      add('A live or booth photograph, at least 2000 pixels wide.', 'A shot in the booth beats a studio portrait, and a phone selfie does not make it.',
+        !S.photos.length ? miss('', 'photos') : widest < 2000 ? miss('The widest one is ' + widest + ' px.', 'photos') : ok(), { src: ['djkit'] });
+      if (to === 'agent') add('Your booth needs, written down.', 'So nobody finds out on the night.', has(S.tech) ? ok() : miss('', 'book', 'f-tech'));
+      add('One booking email.', 'Not "DM for bookings". One address they can reply to.',
+        has(S.who.repContact) || has(S.who.email) ? ok() : miss('', 'book', 'f-who-email'), { src: ['djkit'] });
+      if (to === 'agent') rate();
+    } else if (d === 'performer') {
+      add('A recent colour headshot that looks like you today.', 'It is the first thing a casting director sees. If your hair has changed since it was taken, it is out of date.',
+        ofKind('headshot').length ? ok() : miss('', 'photos'), { src: ['headshots', 'casting'] });
+      add('Your credits and your skills.', 'No credits yet? Training and skills count: dance styles, languages, instruments, a driving licence.',
+        S.highlights.some(has) || has(S.asks.skills) || has(S.asks.training) ? ok() : miss(''), { src: ['casting'] });
+      add('A showreel of two to three minutes.', 'Short clips of your work, alongside the CV.',
+        linksBy(/reel|vimeo\.com|youtube\.com|youtu\.be|self.?tape/i).length ? ok() : miss('Add the link under Links.'), { src: ['showreel', 'casting'] });
+      stats(['height', 'hair', 'eyes'], 'Height, hair and eyes.', 'With units, so they can check you against the brief.');
+      contact();
+    } else if (d === 'creative') {
+      const n = folioItems().length;
+      add('Twelve to thirty of your best images, in one line of work.',
+        'One weak image does more harm than leaving it out, and eighty tells them you cannot edit yourself. Show the work you want to be hired for.',
+        n < 12 ? miss(n + ' so far.', 'photos') : n > 30 ? miss(n + ' is too many. Cut to your best thirty or fewer.', 'photos') : ok(n + ' images.'), { src: ['folio', 'folio2'] });
+      add('One line on what you make and who for.', 'So they know in a sentence whether you fit the brief.', has(S.pitch) ? ok() : miss('', 'book', 'f-pitch'), { src: ['folio'] });
+      if (to === 'client') rate();
+      contact();
+    } else {
+      add('One line on the work.', 'What you do, and for whom.', has(S.pitch) ? ok() : miss('', 'book', 'f-pitch'));
+      rate(); contact();
+    }
+    return out;
+  }
+
+  /* ================= drawing: everything is canvas, in millimetres ================= */
+  const fpx = (pt, k) => pt * 0.352778 * k;
+  function newPage(wmm, hmm, k) {
+    const c = document.createElement('canvas');
+    c.width = Math.round(wmm * k); c.height = Math.round(hmm * k);
+    return { c, ctx: c.getContext('2d'), k, w: wmm, h: hmm, links: [] };
+  }
+  function setF(ctx, fam, weight, pt, k) { ctx.font = weight + ' ' + fpx(pt, k) + 'px ' + fam + ', sans-serif'; }
+  const measure = (ctx, text, tr) => ctx.measureText(text).width + (tr || 0) * Math.max(0, text.length - 1);
+  function tracked(ctx, text, x, y, tr) { if (!tr) return void ctx.fillText(text, x, y); let cx = x; for (const ch of text) { ctx.fillText(ch, cx, y); cx += ctx.measureText(ch).width + tr; } }
+  function wrap(ctx, text, maxW) {
+    const words = String(text).split(/\s+/).filter(Boolean), lines = []; let line = '';
+    for (const w of words) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+    if (line) lines.push(line); return lines;
+  }
+  // shrink the display size until the string fits the width it has
+  function fitPt(ctx, text, fam, weight, maxPx, startPt, k, trackFrac) {
+    let pt = startPt;
+    for (; pt > 4; pt -= 0.5) { setF(ctx, fam, weight, pt, k); if (measure(ctx, text, trackFrac * fpx(pt, k)) <= maxPx) break; }
+    return pt;
+  }
+  function cover(ctx, bmp, x, y, w, h, fx, fy) {
+    const s = Math.max(w / bmp.width, h / bmp.height), dw = bmp.width * s, dh = bmp.height * s;
+    ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+    ctx.drawImage(bmp, x - (dw - w) * ((fx ?? 50) / 100), y - (dh - h) * ((fy ?? 40) / 100), dw, dh); ctx.restore();
+  }
+  // the whole picture, never cropped: someone's work, or their body in a digital
+  function contain(ctx, bmp, x, y, w, h) {
+    const s = Math.min(w / bmp.width, h / bmp.height), dw = bmp.width * s, dh = bmp.height * s;
+    ctx.drawImage(bmp, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  }
+  function ph(ctx, p, x, y, w, h, P, k, hint) {
+    const bmp = p && shots.get(p.id);
+    if (bmp) return cover(ctx, bmp, x, y, w, h, p.fx, p.fy);
+    ctx.fillStyle = mix(P.ink, .10); ctx.fillRect(x, y, w, h);
+    if (!hint || !k) return;
+    setF(ctx, typ().body, '400', 8, k); ctx.fillStyle = mix(P.ink, .45);
+    ctx.textAlign = 'center'; ctx.fillText(hint, x + w / 2, y + h / 2); ctx.textAlign = 'left';
+  }
+
+  /* ---- the comp card ---- */
+  function cardGeom() {
+    const t = TRIMS[S.trim], b = S.bleed ? 3 : 0;
+    return { t, b, W: t.w + 2 * b, H: t.h + 2 * b, m: Math.max(5, t.w * 0.05) };
+  }
+  function backCells(g, n, topPad, bottomReserve) {
+    const pad = g.b + g.m * 0.5, x0 = pad, y0 = g.b + topPad, w = g.W - 2 * pad, gap = g.t.w * 0.018;
+    const hAvail = g.H - y0 - bottomReserve - g.b;
+    if (n <= 1) return [{ x: x0, y: y0, w, h: hAvail }];
+    if (n === 2) { const ch = (hAvail - gap) / 2; return [0, 1].map(i => ({ x: x0, y: y0 + i * (ch + gap), w, h: ch })); }
+    if (n === 3) { const cw = (w - gap) / 2, hh = (hAvail - gap) / 2;
+      return [{ x: x0, y: y0, w: cw, h: hAvail }, { x: x0 + cw + gap, y: y0, w: cw, h: hh }, { x: x0 + cw + gap, y: y0 + hh + gap, w: cw, h: hh }]; }
+    if (n === 4) { const cw = (w - gap) / 2, ch = (hAvail - gap) / 2;
+      return [0, 1, 2, 3].map(i => ({ x: x0 + (i % 2) * (cw + gap), y: y0 + Math.floor(i / 2) * (ch + gap), w: cw, h: ch })); }
+    const cwT = (w - gap) / 2, chT = hAvail * 0.52, chB = hAvail - chT - gap, cwB = (w - 2 * gap) / 3;
+    return [{ x: x0, y: y0, w: cwT, h: chT }, { x: x0 + cwT + gap, y: y0, w: cwT, h: chT },
+      ...[0, 1, 2].map(i => ({ x: x0 + i * (cwB + gap), y: y0 + chT + gap, w: cwB, h: chB }))];
+  }
+  const backLayout = () => {
+    const g = cardGeom(), tpl = S.style.template;
+    const topPad = tpl === 'frame' ? g.m : g.m * 0.5;
+    const reserve = g.t.h * (tpl === 'corner' ? 0.26 : 0.30);
+    return { g, cells: backCells(g, backs().length, topPad, reserve), reserve };
+  };
+  function slotMm(p) {
+    const g = cardGeom();
+    if (p.role === 'front') {
+      if (S.style.template === 'frame') return [g.W - 2 * g.m, g.H - g.m - g.t.h * 0.17];
+      if (S.style.template === 'split') return [g.W, g.H * 0.68];
+      return [g.W, g.H];
+    }
+    const L = backLayout(), i = backs().findIndex(q => q.id === p.id);
+    const c = L.cells[Math.max(0, i)] || L.cells[0];
+    return c ? [c.w, c.h] : [g.W / 2, g.H / 3];
+  }
+  const dpiOf = p => { const [w, h] = slotMm(p); return Math.min(p.w / (w / 25.4), p.h / (h / 25.4)); };
+  const goodTo = p => { const [w, h] = slotMm(p), s = Math.min(p.w / w, p.h / h) / (300 / 25.4); return [w * s, h * s]; };
+
+  function drawName(pg, x, y, maxPx, startPt, colour, align) {
+    const { ctx, k } = pg, F = typ(), t = nameText();
+    const pt = fitPt(ctx, t, F.disp, F.dw, maxPx, startPt, k, F.track);
+    setF(ctx, F.disp, F.dw, pt, k);
+    const tr = F.track * fpx(pt, k), w = measure(ctx, t, tr);
+    ctx.fillStyle = colour;
+    tracked(ctx, t, align === 'right' ? x - w : x, y, tr);
+    return { pt, w };
+  }
+  function subLine(pg, x, y, ptSize, colour, text, maxPx) {
+    if (!text) return;
+    const { ctx, k } = pg, F = typ();
+    setF(ctx, F.mono, '500', ptSize, k);
+    ctx.fillStyle = colour;
+    let t = F.caps ? text.toUpperCase() : text;
+    while (measure(ctx, t, .1 * fpx(ptSize, k)) > maxPx && t.length > 4) t = t.slice(0, -2);
+    tracked(ctx, t, x, y, .1 * fpx(ptSize, k));
+  }
+
+  function drawCard(side, k, marks) {
+    const g = cardGeom(), P = pal(), F = typ(), tpl = S.style.template;
+    const extra = marks ? 5 : 0;
+    const pg = newPage(g.W + 2 * extra, g.H + 2 * extra, k);
+    const { ctx } = pg;
+    ctx.fillStyle = marks ? '#FFFFFF' : P.paper; ctx.fillRect(0, 0, pg.c.width, pg.c.height);
+    ctx.save(); ctx.translate(extra * k, extra * k);
+    const W = g.W * k, H = g.H * k, M = g.m * k, B = g.b * k;
+
+    if (side === 'front') {
+      const f = front();
+      ctx.fillStyle = P.paper; ctx.fillRect(0, 0, W, H);
+      if (tpl === 'bar' || tpl === 'corner') {
+        ph(ctx, f, 0, 0, W, H, P, k, 'One photograph goes here');
+        if (tpl === 'bar') {
+          const barH = Math.max(15, g.t.h * 0.085) * k, by = H - B - barH;
+          const grad = ctx.createLinearGradient(0, by - 16 * k, 0, by);
+          grad.addColorStop(0, mix(P.ink, 0)); grad.addColorStop(1, mix(P.ink, .9));
+          ctx.fillStyle = grad; ctx.fillRect(0, by - 16 * k, W, 16 * k);
+          ctx.fillStyle = mix(P.ink, .92); ctx.fillRect(0, by, W, barH + B);
+          drawName(pg, B + M, by + barH * .55, W - 2 * (B + M), g.t.w * .13, P.paper);
+          subLine(pg, B + M, by + barH * .86, 6.5, mix(P.paper, .72), [S.who.rep, S.who.based].filter(Boolean).join(' · '), W - 2 * (B + M));
+        } else {
+          const sx = B + M, sy = B + M;
+          const grad = ctx.createLinearGradient(0, 0, 0, H * .38);
+          grad.addColorStop(0, mix(P.ink, .68)); grad.addColorStop(1, mix(P.ink, 0));
+          ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H * .38);
+          drawName(pg, sx, sy + g.t.h * .035 * k, (W - 2 * sx) * .82, g.t.w * .082, P.paper);
+          subLine(pg, sx, sy + g.t.h * .062 * k, 6, mix(P.paper, .75), [S.who.rep, S.who.based].filter(Boolean).join(' · '), W - 2 * sx);
+        }
+      } else if (tpl === 'frame') {
+        const px = M, py = M, pw = W - 2 * M, phh = H - M - g.t.h * .17 * k;
+        ph(ctx, f, px, py, pw, phh, P, k, 'One photograph goes here');
+        const ny = py + phh + g.t.h * .062 * k;
+        drawName(pg, px, ny, pw, g.t.w * .105, P.ink);
+        ctx.fillStyle = mix(P.accent, .9); ctx.fillRect(px, ny + g.t.h * .018 * k, pw * .18, .6 * k);
+        subLine(pg, px, ny + g.t.h * .046 * k, 6.5, mix(P.ink, .66), [S.who.rep, S.who.based].filter(Boolean).join(' · '), pw);
+      } else {
+        const phh = H * .68;
+        ph(ctx, f, 0, 0, W, phh, P, k, 'One photograph goes here');
+        ctx.fillStyle = P.ink; ctx.fillRect(0, phh, W, H - phh);
+        const x = B + M;
+        drawName(pg, x, phh + g.t.h * .085 * k, W - 2 * x, g.t.w * .12, P.paper);
+        subLine(pg, x, phh + g.t.h * .115 * k, 6.5, mix(P.paper, .72), [S.who.rep, S.who.based].filter(Boolean).join(' · '), W - 2 * x);
+        const c = [S.who.repContact || S.who.email, S.who.phone].filter(Boolean).join('   ');
+        subLine(pg, x, phh + g.t.h * .145 * k, 6, mix(P.paper, .58), c, W - 2 * x);
+      }
+    } else {
+      ctx.fillStyle = P.paper; ctx.fillRect(0, 0, W, H);
+      const L = backLayout(), bs = backs();
+      if (!bs.length) {
+        const c = L.cells[0]; ctx.fillStyle = mix(P.ink, .08); ctx.fillRect(c.x * k, c.y * k, c.w * k, c.h * k);
+        setF(ctx, F.body, '400', 8, k); ctx.fillStyle = mix(P.ink, .45); ctx.textAlign = 'center';
+        ctx.fillText('Three to five photographs go here', (c.x + c.w / 2) * k, (c.y + c.h / 2) * k); ctx.textAlign = 'left';
+      } else bs.forEach((p, i) => { const c = L.cells[i]; if (c) ph(ctx, p, c.x * k, c.y * k, c.w * k, c.h * k, P); });
+
+      // the stats block answers the front, so each template reads as one card rather than two
+      const last = L.cells[L.cells.length - 1];
+      const onInk = tpl === 'split';
+      const inset = tpl === 'frame' ? g.m : g.m * 0.5;
+      const x = (g.b + inset) * k, maxW = (g.W - 2 * (g.b + inset)) * k;
+      const blockTop = (last ? last.y + last.h : g.H * .6) + g.t.h * .026;
+      if (onInk) { ctx.fillStyle = P.ink; ctx.fillRect(0, blockTop * k, W, H - blockTop * k); }
+      if (tpl === 'frame') { ctx.strokeStyle = mix(P.ink, .4); ctx.lineWidth = Math.max(1, .25 * k);
+        ctx.strokeRect(x, blockTop * k, maxW, (g.H - g.b - inset) * k - blockTop * k); }
+      const fg = onInk ? P.paper : P.ink;
+      const pad = tpl === 'frame' ? g.t.h * .022 * k : 0;
+      let y = blockTop * k + pad + g.t.h * .03 * k;
+      const tx = x + (tpl === 'frame' ? g.t.w * .025 * k : 0), tw = maxW - (tpl === 'frame' ? g.t.w * .05 * k : 0);
+      if (tpl === 'bar') { ctx.fillStyle = mix(P.accent, .9); ctx.fillRect(x, blockTop * k + g.t.h * .012 * k, maxW, .55 * k); }
+      drawName(pg, tx, y, tw, g.t.w * .075, fg);
+      y += g.t.h * .038 * k;
+      const lh = fpx(7, k) * 1.5;
+      if (tpl === 'corner') {
+        // two columns: the facts on the left, how to reach you on the right
+        const cw = tw * .58;
+        setF(ctx, F.mono, '500', 6.6, k); ctx.fillStyle = mix(fg, .92);
+        let ly = y; for (const ln of wrap(ctx, statsLine() || 'Your facts', cw)) { ctx.fillText(ln, tx, ly); ly += fpx(6.6, k) * 1.5; }
+        let ry = y; setF(ctx, F.mono, '400', 6.4, k); ctx.fillStyle = mix(fg, .7);
+        for (const ln of [S.who.repContact || S.who.email, S.who.phone, S.who.site].filter(Boolean)) { ctx.fillText(ln, tx + tw * .64, ry); ry += fpx(6.4, k) * 1.5; }
+        y = Math.max(ly, ry);
+      } else {
+        setF(ctx, F.mono, '500', 7, k); ctx.fillStyle = mix(fg, .92);
+        for (const ln of wrap(ctx, statsLine() || 'Your facts, in the order every form asks for them', tw)) { ctx.fillText(ln, tx, y); y += lh; }
+        const contact = [S.who.repContact || S.who.email, S.who.phone, S.who.site].filter(Boolean).join('  ·  ');
+        if (contact) { y += lh * .35; setF(ctx, F.mono, '400', 6.4, k); ctx.fillStyle = mix(fg, .68);
+          for (const ln of wrap(ctx, contact, tw)) { ctx.fillText(ln, tx, y); y += fpx(6.4, k) * 1.5; } }
+      }
+      const creds = [...new Set(S.photos.filter(p => p.role !== 'off' && (p.credit || '').trim()).map(p => p.credit.trim()))];
+      if (creds.length) { setF(ctx, F.mono, '400', 5.6, k); ctx.fillStyle = mix(fg, .52);
+        ctx.fillText('Photographs: ' + creds.join(', '), tx, Math.min(y + lh * .4, (g.H - g.b - 2.5) * k)); }
+    }
+    ctx.restore();
+    if (marks) {
+      ctx.strokeStyle = 'rgba(0,0,0,.8)'; ctx.lineWidth = Math.max(1, .15 * k);
+      const L = 3.5 * k, tx = (extra + g.b) * k, ty = (extra + g.b) * k, tw = g.t.w * k, th = g.t.h * k;
+      const mark = (x, y, dx, dy) => { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + dy); ctx.stroke(); };
+      [[tx, ty, -1, -1], [tx + tw, ty, 1, -1], [tx, ty + th, -1, 1], [tx + tw, ty + th, 1, 1]]
+        .forEach(([x, y, sx, sy]) => { mark(x, y, sx * L, 0); mark(x, y, 0, sy * L); });
+      ctx.fillStyle = 'rgba(0,0,0,.65)'; setF(ctx, 'sans-serif', '400', 5.5, k);
+      ctx.fillText('Trim ' + f1(g.t.w) + ' × ' + f1(g.t.h) + ' mm · bleed ' + g.b + ' mm', extra * k, extra * k * .62);
+    }
+    return pg;
+  }
+
+  /* ---- sheets: blocks become atomic ops, ops flow into columns ---- */
+  function blockOps(pg, blk, w, P, F) {
+    const { ctx, k } = pg, ops = [];
+    const push = (h, draw) => ops.push({ h, draw });
+    if (blk.t === 'gap') { push(blk.h, () => {}); return ops; }
+    if (blk.t === 'kicker') {
+      push(5.2, (x, y) => {
+        ctx.fillStyle = mix(P.ink, .85); ctx.fillRect(x, y, w, .5 * k);
+        setF(ctx, F.mono, '600', 6.2, k); ctx.fillStyle = P.accent;
+        tracked(ctx, (blk.text || '').toUpperCase(), x, y + 4 * k, .14 * fpx(6.2, k));
+      });
+      return ops;
+    }
+    if (blk.t === 'para' || blk.t === 'bullets') {
+      const pt = blk.pt || 8.9, lh = fpx(pt, k) * 1.45;
+      const bullet = blk.t === 'bullets', ind = bullet ? 4.2 * k : 0;
+      setF(ctx, F.body, blk.weight || '400', pt, k);
+      const items = bullet ? blk.items : String(blk.text).split(/\n{2,}/);
+      items.forEach((item, ii) => {
+        const lines = wrap(ctx, item, w - ind);
+        lines.forEach((ln, li) => push(lh / k, (x, y) => {
+          setF(ctx, F.body, blk.weight || '400', pt, k);
+          ctx.fillStyle = blk.colour || mix(P.ink, .92);
+          if (bullet && li === 0) { ctx.fillStyle = P.accent; ctx.fillRect(x, y + lh * .32, 2 * k, 2 * k); ctx.fillStyle = blk.colour || mix(P.ink, .92); }
+          ctx.fillText(ln, x + ind, y + lh * .78);
+        }));
+        if (ii < items.length - 1) push(lh * .45 / k, () => {});
+      });
+      return ops;
+    }
+    if (blk.t === 'rows') {
+      const pt = 7.8, lh = fpx(pt, k) * 1.62, kw = Math.min(w * .42, 26 * k);
+      blk.rows.forEach(r => {
+        setF(ctx, F.mono, '400', pt, k);
+        const lines = wrap(ctx, r[1], w - kw);
+        lines.forEach((ln, li) => push(lh / k, (x, y) => {
+          setF(ctx, F.mono, '400', pt, k);
+          if (li === 0) { ctx.fillStyle = mix(P.ink, .55); ctx.fillText(r[0], x, y + lh * .74); }
+          setF(ctx, F.mono, '500', pt, k); ctx.fillStyle = mix(P.ink, .95);
+          ctx.fillText(ln, x + kw, y + lh * .74);
+        }));
+      });
+      return ops;
+    }
+    if (blk.t === 'links') {
+      const pt = 7.4, lh = fpx(pt, k) * 1.62, kw = Math.min(w * .34, 22 * k);
+      blk.items.forEach(l => {
+        push(lh / k, (x, y) => {
+          setF(ctx, F.mono, '400', pt, k); ctx.fillStyle = mix(P.ink, .55);
+          ctx.fillText(l.label || 'Link', x, y + lh * .74);
+          setF(ctx, F.mono, '500', pt, k); ctx.fillStyle = P.accent;
+          let t = l.url.replace(/^https?:\/\//, '');
+          while (ctx.measureText(t).width > w - kw && t.length > 6) t = t.slice(0, -2);
+          ctx.fillText(t, x + kw, y + lh * .74);
+          pg.links.push({ x: (x + kw) / k, y: y / k, w: ctx.measureText(t).width / k, h: lh / k, url: l.url });
+        });
+      });
+      return ops;
+    }
+    if (blk.t === 'rate') {
+      const r = blk.r, cur = S.currency || '';
+      const amt = (r.amount || '').trim() ? cur + ' ' + r.amount.trim() + ((r.unit || '').trim() ? ' ' + r.unit.trim() : '') : 'on request';
+      push(7.4, (x, y) => {
+        ctx.fillStyle = mix(P.ink, .28); ctx.fillRect(x, y, w, .3 * k);
+        setF(ctx, F.body, '600', 9.6, k); ctx.fillStyle = mix(P.ink, .96);
+        ctx.fillText(r.label.trim(), x, y + 6.4 * k);
+        setF(ctx, F.mono, '600', 9, k); ctx.fillStyle = P.accent;
+        ctx.textAlign = 'right'; ctx.fillText(amt, x + w, y + 6.4 * k); ctx.textAlign = 'left';
+      });
+      [['What it covers', r.includes], ['What it does not', r.excludes], ['Usage', r.usage]].forEach(([lab, val]) => {
+        if (!(val || '').trim()) return;
+        push(3.4, (x, y) => { setF(ctx, F.mono, '500', 5.8, k); ctx.fillStyle = mix(P.ink, .52);
+          tracked(ctx, lab.toUpperCase(), x, y + 2.6 * k, .12 * fpx(5.8, k)); });
+        const pt = 7.9, lh = fpx(pt, k) * 1.4;
+        setF(ctx, F.body, '400', pt, k);
+        wrap(ctx, val.trim(), w).forEach(ln => push(lh / k, (x, y) => {
+          setF(ctx, F.body, '400', pt, k); ctx.fillStyle = mix(P.ink, .88); ctx.fillText(ln, x, y + lh * .78);
+        }));
+      });
+      push(3, () => {});
+      return ops;
+    }
+    return ops;
+  }
+  // positions are millimetres, the draw closures take pixels. Blocks break whole, never half,
+  // so a heading is never left behind on its own.
+  function flow(pg, blocks, xmm, ymm, wmm, bottomMm, P, F) {
+    const k = pg.k;
+    let cy = ymm, over = 0;
+    const rest = [];
+    for (const blk of blocks) {
+      const ops = blockOps(pg, blk, wmm * k, P, F);
+      const need = ops.reduce((a, o) => a + o.h, 0);
+      if (rest.length || (cy + need > bottomMm && cy > ymm)) { rest.push(blk); over += need; continue; }
+      for (const o of ops) { o.draw(xmm * k, cy * k); cy += o.h; }
+    }
+    return { y: cy, rest, over };
+  }
+  // the header, which is the template speaking on a sheet
+  function sheetHeader(pg, P, F, kicker) {
+    const { ctx, k } = pg, W = pg.w * k, tpl = S.style.template, M = 14 * k;
+    const f = sheetPhoto(), band = tpl === 'corner' ? 0 : (tpl === 'frame' ? 0 : 52 * k);
+    if (band) {
+      ctx.fillStyle = P.ink; ctx.fillRect(0, 0, W, band);
+      if (tpl === 'split' && f) { const pw = 46 * k; ph(ctx, f, W - pw, 0, pw, band, P); }
+      const innerW = W - 2 * M - (tpl === 'split' && f ? 50 * k : 0);
+      setF(ctx, F.mono, '500', 6.4, k); ctx.fillStyle = mix(P.paper, .7);
+      tracked(ctx, kicker.toUpperCase(), M, 13 * k, .14 * fpx(6.4, k));
+      drawName(pg, M, 30 * k, innerW, 26, P.paper);
+      if (S.pitch.trim()) { setF(ctx, F.body, '400', 9.6, k); ctx.fillStyle = mix(P.paper, .84);
+        const ln = wrap(ctx, S.pitch.trim(), innerW)[0] || ''; ctx.fillText(ln, M, 41 * k); }
+      return band / k + 9;
+    }
+    setF(ctx, F.mono, '500', 6.4, k); ctx.fillStyle = mix(P.ink, .55);
+    tracked(ctx, kicker.toUpperCase(), M, 16 * k, .14 * fpx(6.4, k));
+    drawName(pg, M, 32 * k, W - 2 * M, 26, P.ink);
+    let y = 38;
+    if (S.pitch.trim()) { setF(ctx, F.body, '400', 9.6, k); ctx.fillStyle = mix(P.ink, .78);
+      const ln = wrap(ctx, S.pitch.trim(), W - 2 * M)[0] || ''; ctx.fillText(ln, M, 42 * k); y = 46; }
+    ctx.fillStyle = mix(P.ink, .85); ctx.fillRect(M, y * k, W - 2 * M, .5 * k);
+    return y + 8;
+  }
+  function sheetFooter(pg, P, F) {
+    const { ctx, k } = pg, W = pg.w * k, M = 14 * k, y = (pg.h - 13) * k;
+    ctx.fillStyle = mix(P.ink, .28); ctx.fillRect(M, y, W - 2 * M, .3 * k);
+    setF(ctx, F.mono, '400', 6.4, k); ctx.fillStyle = mix(P.ink, .66);
+    const left = [S.who.rep, S.who.repContact || S.who.email, S.who.phone].filter(s => (s || '').trim()).join('  ·  ');
+    ctx.fillText(left, M, y + 5 * k);
+    const right = (S.who.site || '').trim();
+    if (right) { ctx.textAlign = 'right'; ctx.fillStyle = P.accent; ctx.fillText(right, W - M, y + 5 * k); ctx.textAlign = 'left'; }
+    return (pg.h - 17);
+  }
+
+  function oneSheet(k) {
+    const pp = PAPERS[S.paper], P = pal(), F = typ();
+    const pg = newPage(pp.w, pp.h, k), { ctx } = pg;
+    ctx.fillStyle = P.paper; ctx.fillRect(0, 0, pg.c.width, pg.c.height);
+    const top = sheetHeader(pg, P, F, DISC[S.disc].label + ' · one sheet');
+    const bottom = sheetFooter(pg, P, F);
+    const M = 14, RW = 62, GUT = 8, LW = pp.w - 2 * M - RW - GUT;
+    const d = DISC[S.disc];
+    const L = [];
+    if (S.bio.trim()) L.push({ t: 'kicker', text: 'The short version' }, { t: 'para', text: S.bio.trim() }, { t: 'gap', h: 4 });
+    const hi = S.highlights.filter(h => (h || '').trim());
+    if (hi.length) L.push({ t: 'kicker', text: d.hiLabel }, { t: 'bullets', items: hi.map(h => h.trim()) }, { t: 'gap', h: 4 });
+    const asks = (d.extraAsk || []).filter(([kk]) => (S.asks[kk] || '').trim());
+    if (asks.length) L.push({ t: 'kicker', text: 'The detail' }, { t: 'rows', rows: asks.map(([kk, lab]) => [lab, S.asks[kk].trim()]) }, { t: 'gap', h: 4 });
+    if (S.tech.trim()) L.push({ t: 'kicker', text: d.techLabel || 'What is needed' }, { t: 'para', text: S.tech.trim() }, { t: 'gap', h: 4 });
+    const links = allLinks();
+    if (links.length) L.push({ t: 'kicker', text: 'Where to hear and see the work' }, { t: 'links', items: links });
+
+    const R = [];
+    const rows = factRows();
+    if (rows.length) R.push({ t: 'kicker', text: 'The facts' }, { t: 'rows', rows: rows.map(r => [r[0], r[1]]) }, { t: 'gap', h: 4 });
+    const book = [['Based', S.who.based], [d.repLabel, S.who.rep], ['Contact', S.who.repContact || S.who.email], ['Phone', S.who.phone]].filter(r => (r[1] || '').trim());
+    if (book.length) R.push({ t: 'kicker', text: 'Booking' }, { t: 'rows', rows: book.map(r => [r[0], r[1].trim()]) });
+    const creds = [...new Set(S.photos.filter(p => (p.credit || '').trim()).map(p => p.credit.trim()))];
+    if (creds.length) R.push({ t: 'gap', h: 3 }, { t: 'para', text: 'Photographs: ' + creds.join(', '), pt: 6.6, colour: mix(P.ink, .55) });
+
+    let ry = top;
+    const f = sheetPhoto(), showPhoto = f && S.style.template !== 'split';
+    if (showPhoto) { const hgt = RW * 4 / 3; ph(ctx, f, (pp.w - M - RW) * k, top * k, RW * k, hgt * k, P); ry = top + hgt + 6; }
+    const a = flow(pg, L, M, top, LW, bottom, P, F);
+    const b = flow(pg, R, pp.w - M - RW, ry, RW, bottom, P, F);
+    return { pages: [pg], over: Math.max(a.over, b.over), dropped: a.rest.length + b.rest.length };
+  }
+
+  function rateSheet(k) {
+    const pp = PAPERS[S.paper], P = pal(), F = typ();
+    const M = 14, RW = 62, GUT = 8, LW = pp.w - 2 * M - RW - GUT;
+    const d = DISC[S.disc], T = S.terms;
+    const rates = S.rates.filter(r => (r.label || '').trim());
+    let L = rates.length ? rates.map(r => ({ t: 'rate', r })) : [{ t: 'para', text: 'No rates yet.', colour: mix(P.ink, .55) }];
+    const terms = [['What every rate includes', T.included], ['What is never included', T.excluded], ['Usage and licence', T.usage], ['Payment', T.payment], ['Travel', T.travel]].filter(r => (r[1] || '').trim());
+    let R = [];
+    if (terms.length) { R.push({ t: 'kicker', text: 'The terms' }); terms.forEach(r => R.push({ t: 'para', text: r[0] + '. ' + r[1].trim(), pt: 7.9 }, { t: 'gap', h: 2 })); }
+    if ((T.holds || '').trim()) R.push({ t: 'gap', h: 3 }, { t: 'kicker', text: 'How long this holds' },
+      { t: 'para', text: 'These rates hold for ' + T.holds.trim() + ' days from ' + fdate(T.from || today()) + '. After that, ask again.', pt: 7.9 });
+
+    const pages = []; let first = true;
+    while (L.length || R.length) {
+      const pg = newPage(pp.w, pp.h, k), { ctx } = pg;
+      ctx.fillStyle = P.paper; ctx.fillRect(0, 0, pg.c.width, pg.c.height);
+      const top = first ? sheetHeader(pg, P, F, d.ratesTitle + ' · rate card') : contHeader(pg, P, F);
+      const bottom = sheetFooter(pg, P, F);
+      const a = flow(pg, L, M, top, LW, bottom, P, F);
+      const b = flow(pg, R, pp.w - M - RW, top, RW, bottom, P, F);
+      pages.push(pg); L = a.rest; R = b.rest; first = false;
+      if (pages.length > 5) break;
+    }
+    return { pages, over: 0, dropped: 0 };
+  }
+  function contHeader(pg, P, F) {
+    const { ctx, k } = pg, M = 14 * k;
+    setF(ctx, F.mono, '500', 6.4, k); ctx.fillStyle = mix(P.ink, .55);
+    tracked(ctx, (nameText() + ' · continued').toUpperCase(), M, 16 * k, .14 * fpx(6.4, k));
+    ctx.fillStyle = mix(P.ink, .85); ctx.fillRect(M, 20 * k, pg.w * k - 2 * M, .5 * k);
+    return 27;
+  }
+
+  /* ---- the digitals sheet: what an agency asks a new model for, plain on purpose ---- */
+  function digitalsSheet(k) {
+    const pp = PAPERS[S.paper], P = pal(), F = typ(), M = 14;
+    const pg = newPage(pp.w, pp.h, k), { ctx } = pg;
+    ctx.fillStyle = P.paper; ctx.fillRect(0, 0, pg.c.width, pg.c.height);
+    setF(ctx, F.mono, '500', 6.4, k); ctx.fillStyle = mix(P.ink, .55);
+    tracked(ctx, ('Digitals · ' + fdate(today())).toUpperCase(), M * k, 16 * k, .14 * fpx(6.4, k));
+    drawName(pg, M * k, 30 * k, (pp.w - 2 * M) * k, 24, P.ink);
+    let y = 37;
+    setF(ctx, F.mono, '500', 8, k); ctx.fillStyle = mix(P.ink, .92);
+    const lh = fpx(8, k) * 1.5 / k;
+    for (const ln of wrap(ctx, statsLine() || 'Your stats go here, in the order agencies ask for them', (pp.w - 2 * M) * k)) { ctx.fillText(ln, M * k, (y + 3) * k); y += lh; }
+    setF(ctx, F.mono, '400', 7, k); ctx.fillStyle = mix(P.ink, .66);
+    const meta = [has(S.who.age) ? 'Age ' + S.who.age.trim() : '', S.who.based, S.who.email || S.who.repContact, S.who.phone].filter(has).join('   ·   ');
+    if (meta) { ctx.fillText(meta, M * k, (y + 4) * k); y += 5; }
+    if (minor() && has(S.who.guardian)) { ctx.fillText('Parent or guardian: ' + S.who.guardian.trim(), M * k, (y + 4) * k); y += 5; }
+    y += 5;
+    ctx.fillStyle = mix(P.ink, .85); ctx.fillRect(M * k, y * k, (pp.w - 2 * M) * k, .5 * k);
+    y += 5;
+    const bottom = pp.h - 17, gap = 5, lab = 6;
+    const cw = (pp.w - 2 * M - gap) / 2, ch = (bottom - y - gap - 2 * lab) / 2;
+    [['headshot', 'Headshot'], ['three', 'Three-quarter'], ['profile', 'Profile'], ['full', 'Full length']].forEach(([kind, label], i) => {
+      const cx = M + (i % 2) * (cw + gap), cy = y + Math.floor(i / 2) * (ch + lab + gap);
+      const p = ofKind(kind)[0], bmp = p && shots.get(p.id);
+      ctx.fillStyle = mix(P.ink, .06); ctx.fillRect(cx * k, cy * k, cw * k, ch * k);
+      if (bmp) contain(ctx, bmp, cx * k, cy * k, cw * k, ch * k);
+      else { setF(ctx, F.body, '400', 8, k); ctx.fillStyle = mix(P.ink, .42); ctx.textAlign = 'center';
+        ctx.fillText(label + ' goes here', (cx + cw / 2) * k, (cy + ch / 2) * k); ctx.textAlign = 'left'; }
+      setF(ctx, F.mono, '500', 6.2, k); ctx.fillStyle = mix(P.ink, .6);
+      tracked(ctx, label.toUpperCase(), cx * k, (cy + ch + 4.2) * k, .12 * fpx(6.2, k));
+    });
+    sheetFooter(pg, P, F);
+    return { pages: [pg] };
+  }
+
+  /* ---- the portfolio: a cover, then one piece to a page, never cropped ---- */
+  // everything but a model's digitals: a digital is a plain record, the portfolio is the work
+  const inFolio = p => !(S.disc === 'model' && DIGI.includes(p.kind));
+  const folioItems = () => S.photos.filter(inFolio);
+  function folioCover(k) {
+    const pp = PAPERS[S.paper], P = pal(), F = typ(), M = 14;
+    const pg = newPage(pp.w, pp.h, k), { ctx } = pg;
+    ctx.fillStyle = P.paper; ctx.fillRect(0, 0, pg.c.width, pg.c.height);
+    const top = sheetHeader(pg, P, F, DISC[S.disc].label + ' · portfolio');
+    const bottom = sheetFooter(pg, P, F);
+    const blocks = [];
+    if (S.bio.trim()) blocks.push({ t: 'kicker', text: 'The short version' }, { t: 'para', text: S.bio.trim() }, { t: 'gap', h: 4 });
+    const hi = S.highlights.filter(has);
+    if (hi.length) blocks.push({ t: 'kicker', text: DISC[S.disc].hiLabel }, { t: 'bullets', items: hi.map(h => h.trim()) }, { t: 'gap', h: 4 });
+    const n = folioItems().length;
+    blocks.push({ t: 'kicker', text: 'Inside' }, { t: 'para', text: n ? n + (n === 1 ? ' piece' : ' pieces') + ', one to a page.' : 'Your work goes here, one piece to a page.' });
+    const lk = allLinks(); if (lk.length) blocks.push({ t: 'gap', h: 4 }, { t: 'kicker', text: 'More of the work' }, { t: 'links', items: lk });
+    flow(pg, blocks, M, top, pp.w - 2 * M, bottom, P, F);
+    return pg;
+  }
+  function folioPage(k, p, n, total) {
+    const pp = PAPERS[S.paper], P = pal(), F = typ(), M = 14;
+    const pg = newPage(pp.w, pp.h, k), { ctx } = pg;
+    ctx.fillStyle = P.paper; ctx.fillRect(0, 0, pg.c.width, pg.c.height);
+    const foot = sheetFooter(pg, P, F), capY = foot - 4, bottom = capY - 7;
+    const bmp = shots.get(p.id);
+    if (bmp) contain(ctx, bmp, M * k, M * k, (pp.w - 2 * M) * k, (bottom - M) * k);
+    else { ctx.fillStyle = mix(P.ink, .08); ctx.fillRect(M * k, M * k, (pp.w - 2 * M) * k, (bottom - M) * k); }
+    setF(ctx, F.mono, '500', 6.4, k); ctx.fillStyle = mix(P.ink, .5); ctx.textAlign = 'right';
+    const pn = n + ' / ' + total; ctx.fillText(pn, (pp.w - M) * k, capY * k); ctx.textAlign = 'left';
+    if (has(p.caption)) {
+      setF(ctx, F.body, '400', 8.6, k); ctx.fillStyle = mix(P.ink, .88);
+      let t = p.caption.trim(); const room = (pp.w - 2 * M - 20) * k;
+      while (ctx.measureText(t).width > room && t.length > 8) t = t.slice(0, -2);
+      if (t !== p.caption.trim()) t = t.replace(/\s*\S*$/, '') + '…';
+      ctx.fillText(t, M * k, capY * k);
+    }
+    return pg;
+  }
+  // pages as functions, so a thirty-page portfolio is drawn one page at a time, not held in memory at once
+  function folioPages(k) {
+    const items = folioItems(), fns = [() => folioCover(k)];
+    items.forEach((p, i) => fns.push(() => folioPage(k, p, i + 1, items.length)));
+    return fns;
+  }
+
+  /* ================= export: PDF with real links, and images ================= */
+  class Pdf {
+    constructor() { this.objs = [null]; }
+    reserve() { this.objs.push(null); return this.objs.length - 1; }
+    set(id, dict, stream) { this.objs[id] = { dict, stream }; return id; }
+    add(dict, stream) { return this.set(this.reserve(), dict, stream); }
+    blob(root) {
+      const enc = new TextEncoder(), parts = [], offs = []; let pos = 0;
+      const push = x => { const b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); pos += b.length; };
+      push('%PDF-1.4\n');
+      for (let i = 1; i < this.objs.length; i++) {
+        const o = this.objs[i]; offs[i] = pos;
+        if (o.stream) { const st = typeof o.stream === 'string' ? enc.encode(o.stream) : o.stream;
+          push(i + ' 0 obj\n<< ' + o.dict + ' /Length ' + st.length + ' >>\nstream\n'); push(st); push('\nendstream\nendobj\n'); }
+        else push(i + ' 0 obj\n<< ' + o.dict + ' >>\nendobj\n');
+      }
+      const xref = pos, n = this.objs.length;
+      push('xref\n0 ' + n + '\n0000000000 65535 f \n');
+      for (let i = 1; i < n; i++) push(String(offs[i]).padStart(10, '0') + ' 00000 n \n');
+      push('trailer\n<< /Size ' + n + ' /Root ' + root + ' 0 R >>\nstartxref\n' + xref + '\n%%EOF\n');
+      return new Blob(parts, { type: 'application/pdf' });
+    }
+  }
+  const PT = 72 / 25.4, f2 = v => v.toFixed(2);
+  const pdfStr = s => '(' + String(s).replace(/[\\()]/g, '\\$&').replace(/[^\x20-\x7e]/g, c => '\\' + (c.charCodeAt(0) & 0xff).toString(8).padStart(3, '0')) + ')';
+  async function jpegObj(pdf, canvas, q) {
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', q || 0.92));
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    return pdf.add('/Type /XObject /Subtype /Image /Width ' + canvas.width + ' /Height ' + canvas.height +
+      ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode', bytes);
+  }
+  // each page goes in as one photograph, so every script and the chosen fonts survive, with real
+  // link annotations laid over it so a promoter can still click through. A page may be a function,
+  // drawn only when its turn comes and let go straight after, so long files do not exhaust a phone.
+  async function pagesToPdf(pages, name, q) {
+    const pdf = new Pdf(), pagesId = pdf.reserve(), kids = [];
+    for (const item of pages) {
+      const pg = typeof item === 'function' ? item() : item;
+      const img = await jpegObj(pdf, pg.c, q);
+      const PW = pg.w * PT, PH = pg.h * PT;
+      const cs = pdf.add('', 'q ' + f2(PW) + ' 0 0 ' + f2(PH) + ' 0 0 cm /Im0 Do Q\n');
+      const annots = (pg.links || []).map(l => pdf.add('/Type /Annot /Subtype /Link /Border [0 0 0] /Rect [' +
+        [l.x * PT, PH - (l.y + l.h) * PT, (l.x + l.w) * PT, PH - l.y * PT].map(f2).join(' ') +
+        '] /A << /S /URI /URI ' + pdfStr(l.url) + ' >>'));
+      kids.push(pdf.add('/Type /Page /Parent ' + pagesId + ' 0 R /MediaBox [0 0 ' + f2(PW) + ' ' + f2(PH) + ']' +
+        (annots.length ? ' /Annots [' + annots.map(a => a + ' 0 R').join(' ') + ']' : '') +
+        ' /Resources << /XObject << /Im0 ' + img + ' 0 R >> >> /Contents ' + cs + ' 0 R'));
+      pg.c.width = pg.c.height = 0;
+      await new Promise(r => setTimeout(r, 0));
+    }
+    pdf.set(pagesId, '/Type /Pages /Count ' + kids.length + ' /Kids [' + kids.map(x => x + ' 0 R').join(' ') + ']');
+    const blob = pdf.blob(pdf.add('/Type /Catalog /Pages ' + pagesId + ' 0 R'));
+    saveBlob(blob, name);
+    return { size: blob.size, pages: kids.length };
+  }
+  function saveBlob(blob, name) {
+    const a = document.createElement('a'), u = URL.createObjectURL(blob);
+    a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+  }
+  const DPI = 300 / 25.4;
+  // print where it will be printed, screen resolution where it will be read on a phone
+  const XDPI = { card: 300, sheet: 300, rates: 300, digitals: 200, portfolio: 150 };
+  const kOf = kind => (XDPI[kind] || 300) / 25.4;
+  const NAMES = { card: 'comp-card', sheet: 'one-sheet', rates: 'rate-card', digitals: 'digitals', portfolio: 'portfolio' };
+  const stem = () => slug(S.who.name) || 'file';
+  function build(kind, k) {
+    if (kind === 'card') return [() => drawCard('front', k, S.bleed), () => drawCard('back', k, S.bleed)];
+    if (kind === 'sheet') return oneSheet(k).pages;
+    if (kind === 'rates') return rateSheet(k).pages;
+    if (kind === 'digitals') return digitalsSheet(k).pages;
+    if (kind === 'portfolio') return folioPages(k);
+    return [];
+  }
+  function sizeNote(what, r) {
+    const mb = r.size / 1048576, sz = mb >= 1 ? mb.toFixed(1) + ' MB' : Math.max(1, Math.round(r.size / 1024)) + ' KB';
+    let s = 'Saved ' + what + ', ' + r.pages + ' page' + (r.pages > 1 ? 's' : '') + ', ' + sz + '.';
+    if (mb > 10) s += ' That is large to open on a phone. Cut to your best, or send a link to it instead.';
+    return s;
+  }
+  async function exportPdf(kind) {
+    status('Drawing…');
+    const r = await pagesToPdf(build(kind, kOf(kind)), NAMES[kind] + '-' + stem() + '-' + today() + '.pdf', kind === 'portfolio' ? .82 : .92);
+    status(sizeNote('the ' + OUT_LABEL[kind].toLowerCase(), r));
+  }
+  async function exportImages(kind, web) {
+    status('Drawing…');
+    const w = kind === 'card' ? TRIMS[S.trim].w + (S.bleed ? 16 : 0) : PAPERS[S.paper].w;
+    const items = build(kind, web ? 1800 / w : DPI);
+    const type = web ? 'image/jpeg' : 'image/png', ext = web ? 'jpg' : 'png';
+    for (let i = 0; i < items.length; i++) {
+      const pg = typeof items[i] === 'function' ? items[i]() : items[i];
+      const tag = items.length > 1 ? '-' + (kind === 'card' ? (i ? 'back' : 'front') : i + 1) : '';
+      const blob = await new Promise(res => pg.c.toBlob(res, type, .92));
+      pg.c.width = pg.c.height = 0;
+      saveBlob(blob, NAMES[kind] + tag + '-' + stem() + (web ? '-web' : '') + '.' + ext);
+      await new Promise(res => setTimeout(res, 150));
+    }
+    status(web ? 'Saved for the web, 1800 px wide.' : 'Saved at 300 DPI, print size.');
+  }
+  // a photograph goes out redrawn, which also drops any location the phone wrote into the file
+  async function photoFile(p, name) {
+    const bmp = shots.get(p.id); if (!bmp) return false;
+    const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height;
+    c.getContext('2d').drawImage(bmp, 0, 0);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .92));
+    c.width = c.height = 0;
+    saveBlob(blob, name); return true;
+  }
+  async function digitalFiles() {
+    let n = 0;
+    for (const [kk, lab] of [['headshot', 'headshot'], ['three', 'three-quarter'], ['profile', 'profile'], ['full', 'full-length']]) {
+      const p = ofKind(kk)[0]; if (!p) continue;
+      if (await photoFile(p, 'digital-' + lab + '-' + stem() + '.jpg')) n++;
+      await new Promise(r => setTimeout(r, 250));
+    }
+    status(n ? 'Saved ' + n + ' digital' + (n > 1 ? 's' : '') + ' as separate photographs, without any location your phone may have written into them.' : 'No digitals to save yet.');
+  }
+  // what the recipient gets: what they ask for first, then the core three wherever you have made them,
+  // as one file where it can be one
+  function made(o) {
+    if (o === 'card') return !!front();
+    if (o === 'portfolio') return folioItems().length > 0;
+    if (o === 'rates') return S.rates.some(r => has(r.label)) && !rateBlocks().length;
+    return true;
+  }
+  function bundle() {
+    const list = [...send().first];
+    CORE.forEach(o => { if (!list.includes(o) && made(o)) list.push(o); });
+    return list;
+  }
+  async function exportFor() {
+    const all = bundle(), outs = all.filter(o => o !== 'headshot'), said = [];
+    if (all.includes('headshot')) {
+      const h = ofKind('headshot')[0];
+      if (h && await photoFile(h, 'headshot-' + stem() + '.jpg')) said.push('the headshot as a JPG');
+    }
+    if (outs.length) {
+      status('Drawing…');
+      const pages = []; outs.forEach(o => pages.push(...build(o, kOf(o))));
+      const r = await pagesToPdf(pages, stem() + '-for-' + slug(audLabel()) + '-' + today() + '.pdf', outs.includes('portfolio') ? .82 : .92);
+      said.push(sizeNote('the file for ' + lcFirst(audLabel()), r).replace(/^Saved /, '').replace(/\.$/, ''));
+    }
+    status(said.length ? 'Saved ' + said.join(', and ') + '.' : 'Nothing to save yet.');
+  }
+
+  /* ================= the paste block ================= */
+  function pasteBlock() {
+    const L = [], d = DISC[S.disc], n = (S.who.name || '').trim();
+    if (n) L.push(n.toUpperCase());
+    if (S.pitch.trim()) L.push(S.pitch.trim());
+    L.push('');
+    const age = (S.disc === 'model' || S.disc === 'performer') && has(S.who.age);
+    if (factRows().length) { L.push('FACTS'); L.push(statsLine()); }
+    if (age) L.push('Age: ' + S.who.age.trim());
+    if (age && minor() && has(S.who.guardian)) L.push('Parent or guardian: ' + S.who.guardian.trim());
+    if (factRows().length || age) L.push('');
+    for (const [kk, lab] of (d.extraAsk || [])) if ((S.asks[kk] || '').trim()) L.push(lab + ': ' + S.asks[kk].trim());
+    if ((d.extraAsk || []).some(([kk]) => (S.asks[kk] || '').trim())) L.push('');
+    if (S.bio.trim()) { L.push('BIO'); L.push(S.bio.trim()); L.push(''); }
+    const hi = S.highlights.filter(h => (h || '').trim());
+    if (hi.length) { L.push(d.hiLabel.toUpperCase()); hi.forEach(h => L.push('- ' + h.trim())); L.push(''); }
+    if (S.tech.trim()) { L.push((d.techLabel || 'NOTES').toUpperCase()); L.push(S.tech.trim()); L.push(''); }
+    const links = allLinks();
+    if (links.length) { L.push('LINKS'); links.forEach(l => L.push((l.label ? l.label + ': ' : '') + l.url.trim())); L.push(''); }
+    L.push('BOOKING');
+    [['Based', S.who.based], [d.repLabel, S.who.rep], ['Contact', S.who.repContact || S.who.email], ['Phone', S.who.phone], ['Site', S.who.site]]
+      .forEach(r => { if ((r[1] || '').trim()) L.push(r[0] + ': ' + r[1].trim()); });
+    return L.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+  }
+
+  /* ================= fonts ================= */
+  const loaded = new Set();
+  async function loadType(key) {
+    const F = TYPES[key]; if (!F) return;
+    if (F.g && !loaded.has(key)) {
+      loaded.add(key);
+      const l = el('link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=' + F.g + '&display=swap' });
+      document.head.appendChild(l);
+      await new Promise(r => { l.onload = r; l.onerror = r; setTimeout(r, 4000); });
+    }
+    try {
+      await Promise.all([
+        document.fonts.load(F.dw + ' 40px ' + F.disp),
+        document.fonts.load('400 14px ' + F.body),
+        document.fonts.load('500 14px ' + F.mono),
+      ]);
+    } catch (e) {}
+  }
+  const ensureFonts = () => loadType(S.style.type);
+  // the picker is only honest if every option is drawn in its own face, so that tab loads them all
+  async function ensureAllFonts() { await Promise.all(Object.keys(TYPES).map(loadType)); }
+
+  /* ================= the form ================= */
+  function field(label, path, opts) {
+    const o = opts || {}, id = 'f-' + path.replace(/[^a-z0-9]/gi, '-'), v = esc(get(path) ?? '');
+    const input = o.area ? '<textarea id="' + id + '" data-path="' + path + '"' + (o.rows ? ' rows="' + o.rows + '"' : '') + (o.hint ? ' placeholder="' + esc(o.hint) + '"' : '') + '>' + v + '</textarea>'
+      : '<input id="' + id + '" type="' + (o.type || 'text') + '" data-path="' + path + '" value="' + v + '"' + (o.hint ? ' placeholder="' + esc(o.hint) + '"' : '') + (o.mode ? ' inputmode="' + o.mode + '"' : '') + '>';
+    return '<div class="pk-f"><label for="' + id + '">' + esc(label) + '</label>' + input + '</div>';
+  }
+  function selectF(label, path, options) {
+    const id = 'f-' + path.replace(/[^a-z0-9]/gi, '-'), v = get(path);
+    return '<div class="pk-f"><label for="' + id + '">' + esc(label) + '</label><select id="' + id + '" data-path="' + path + '">' +
+      options.map(([kk, l]) => '<option value="' + esc(kk) + '"' + (String(v) === String(kk) ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select></div>';
+  }
+  function srcHtml(keys) {
+    const parts = keys.filter(kk => SRC[kk]).map(kk => '<a href="' + esc(SRC[kk][1]) + '" target="_blank" rel="noopener noreferrer">' + esc(SRC[kk][0]) + '</a>');
+    return parts.length ? '<p class="src">Source: ' + parts.join('; ') + '</p>' : '';
+  }
+  function reqHtml(r) {
+    const st = { ok: 'Done', miss: 'To do', ask: 'Confirm' }[r.st];
+    return '<li class="pk-req ' + r.st + '"><div class="top"><span class="st">' + st + '</span><div style="flex:1;min-width:0">' +
+      '<div class="need">' + esc(r.need) + '</div>' +
+      (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+      '<details><summary>Why' + (r.how ? ', and how' : '') + '</summary><p class="why">' + esc(r.why) + '</p>' +
+      (r.how ? '<ol class="pk-how">' + r.how.map(s => '<li>' + esc(s) + '</li>').join('') + '</ol>' : '') +
+      (r.src ? srcHtml(r.src) : '') + '</details></div>' +
+      (r.st !== 'ok' && r.go ? '<button type="button" class="pk-btn" data-fix="' + r.go + '"' + (r.focus ? ' data-focus="' + r.focus + '"' : '') + '>Fix it</button>' : '') +
+      '</div></li>';
+  }
+  // A first look is what a booker takes, so the name does not say what the tool does. This does,
+  // and only while there is nothing here yet. It goes as soon as you type a name.
+  function intro() {
+    if (has(S.who.name) || S.photos.length) return '';
+    return '<fieldset><legend><b>·</b> What this is</legend>' +
+      '<p class="pk-help" style="color:var(--text);font-size:13.5px;line-height:1.55">A first look is what an agency, a promoter or a client sees before they meet you. ' +
+      'This makes yours: your portfolio, your comp card and your rate card, from one set of facts.</p>' +
+      '<p class="pk-help">Then tell it who you are sending to. It knows what each side asks for first from someone new: four plain digitals for a model agency, one mix a promoter can play on a phone. It checks what you have against that and puts it at the front of the file, with your portfolio, comp card and rate card behind it.</p>' +
+      '<p class="pk-help">Your photographs and measurements never leave this browser.</p>' +
+      '<div class="pk-actions" style="margin-top:4px"><button type="button" class="pk-btn primary" id="pk-example2">Show me, with an example</button></div></fieldset>';
+  }
+  function formAim() {
+    const aud = AUD[S.disc], list = reqs(), todo = list.filter(r => r.st !== 'ok').length, lab = lcFirst(audLabel());
+    let h = intro() + '<fieldset><legend><b>01</b> What you do, and who it is for</legend>' +
+      selectF('What you do', 'disc', Object.entries(DISC).map(([kk, v]) => [kk, v.label])) +
+      '<label id="lab-aud">Who you are sending it to</label><div class="pk-aud" role="group" aria-labelledby="lab-aud">' +
+      Object.entries(aud).map(([kk, a]) => '<button type="button" class="pk-audbtn" data-aud="' + kk + '" aria-pressed="' + (S.aim.to === kk) + '">' +
+        '<b>' + esc(a.label) + '</b><span>' + esc(a.blurb) + '</span></button>').join('') + '</div></fieldset>';
+    h += '<fieldset><legend><b>02</b> What ' + esc(lab) + ' wants</legend>' +
+      '<div class="pk-verdict' + (todo ? '' : ' ready') + '">' +
+      (todo ? '<b>Not ready yet.</b> ' + todo + (todo === 1 ? ' thing' : ' things') + ' to do before you send it.' : '<b>Ready to send.</b> Everything ' + esc(lab) + ' asks for is here.') + '</div>' +
+      '<ul class="pk-reqs">' + list.map(reqHtml).join('') + '</ul></fieldset>';
+    const first = send().first;
+    const coreNote = o => {
+      if (o === 'portfolio') { const n = folioItems().length; return n ? n + (n === 1 ? ' piece' : ' pieces') : 'Not made yet, so not in the file'; }
+      if (o === 'card') return front() ? 'Front, and ' + backs().length + ' on the back' : 'Not made yet: choose a front photograph';
+      const n = S.rates.filter(r => has(r.label)).length;
+      return !n ? 'Not made yet, so not in the file' : rateBlocks().length ? 'Held back until its terms are in' : n + (n === 1 ? ' rate' : ' rates') + ', with terms';
+    };
+    const rows = [...first.map(o => [o, 'What they ask for first', '']),
+      ...CORE.filter(o => !first.includes(o)).map(o => [o, coreNote(o), made(o) ? '' : (o === 'rates' ? 'rates' : 'photos')])];
+    h += '<fieldset><legend><b>03</b> What to send them</legend><p class="pk-help" style="color:var(--text)">' + esc(send().say) + '</p>' +
+      '<ul class="pk-sendlist">' + rows.map(([o, note, fix]) => '<li><span class="nm">' + esc(OUT_LABEL[o]) + '</span><span class="nt' + (fix ? ' off' : '') + '">' + esc(note) + '</span>' +
+        (fix ? '<button type="button" class="pk-btn" data-fix="' + fix + '">Make it</button>' : '') + '</li>').join('') + '</ul>' +
+      '<p class="pk-help" style="margin-top:8px">Your portfolio, comp card and rate card go in the same file, behind what they ask for first, whenever you have made them.</p>' +
+      '<div class="pk-actions"><button type="button" class="pk-btn primary" data-sendnow="1">Export for ' + esc(lab) + '</button>' +
+      (S.disc === 'model' && S.aim.to === 'agency' ? '<button type="button" class="pk-btn" data-digifiles="1">The digitals as separate photos</button>' : '') +
+      '<button type="button" class="pk-btn" data-copy="all">Copy the paste block</button></div>' +
+      (S.disc === 'model' && S.aim.to === 'agency' ? '<p class="pk-help" style="margin-top:8px">Most agency forms ask you to upload each digital on its own. The separate photos are for that.</p>' : '') +
+      (todo ? '<p class="pk-help" style="margin-top:8px">You can export before it is ready. It will just be missing what the list says.</p>' : '') + '</fieldset>';
+    const nv = NEVER[S.disc];
+    if (nv) h += '<fieldset class="pk-never"><legend><b>!</b> ' + esc(nv.head) + '</legend><p class="pk-help" style="color:var(--text)">' + esc(nv.text) + '</p>' + srcHtml(nv.src) + '</fieldset>';
+    return h;
+  }
+  function formStyle() {
+    const P = pal(), c = contrast(P.ink, P.paper);
+    let h = '<fieldset><legend><b>01</b> The shape of the card</legend>' +
+      '<p class="pk-help">Four ways to lay out the same facts. Every one is still a comp card, because that is what makes it readable to the person holding forty of them. The sheets follow the same choice.</p>' +
+      '<div class="pk-swatches" role="group" aria-label="Card template">' +
+      Object.entries(TEMPLATES).map(([kk, t]) => '<button type="button" class="pk-sw" data-tpl="' + kk + '" aria-pressed="' + (S.style.template === kk) + '">' +
+        '<canvas data-swatch="tpl:' + kk + '" width="104" height="148" role="img" aria-label="' + esc(t.label + '. ' + t.note) + '"></canvas>' +
+        '<span class="nm">' + esc(t.label) + '</span></button>').join('') + '</div>' +
+      '<p class="pk-help" style="margin-top:8px">' + esc(TEMPLATES[S.style.template].note) + '</p></fieldset>';
+    h += '<fieldset><legend><b>02</b> The type</legend>' +
+      '<p class="pk-help">Pick by how it reads, not by the name.</p>' +
+      '<div class="pk-swatches" role="group" aria-label="Typeface">' +
+      Object.entries(TYPES).map(([kk, t]) => '<button type="button" class="pk-sw" data-type="' + kk + '" aria-pressed="' + (S.style.type === kk) + '">' +
+        '<canvas data-swatch="type:' + kk + '" width="104" height="52" role="img" aria-label="' + esc(t.label) + '"></canvas>' +
+        '<span class="nm">' + esc(t.label) + '</span></button>').join('') + '</div></fieldset>';
+    h += '<fieldset><legend><b>03</b> The colours</legend>' +
+      '<div class="pk-swatches" role="group" aria-label="Colours">' +
+      Object.entries(PALETTES).map(([kk, p]) => '<button type="button" class="pk-sw" data-pal="' + kk + '" aria-pressed="' + (S.style.palette === kk) + '">' +
+        '<canvas data-swatch="pal:' + kk + '" width="104" height="52" role="img" aria-label="' + esc(p.label) + '"></canvas>' +
+        '<span class="nm">' + esc(p.label) + '</span></button>').join('') + '</div>';
+    if (S.style.palette === 'custom') {
+      h += '<div class="pk-colrow">' +
+        ['paper', 'ink', 'accent'].map(kk => '<div><label for="c-' + kk + '">' + (kk === 'paper' ? 'Paper' : kk === 'ink' ? 'Text' : 'Accent') + '</label>' +
+          '<input type="color" id="c-' + kk + '" data-custom="' + kk + '" value="' + esc(S.style.custom[kk]) + '"></div>').join('') + '</div>';
+    }
+    h += '<p class="pk-contrast' + (c < 4.5 ? ' bad' : '') + '">Text on paper reads at ' + c.toFixed(1) + ' to 1. ' +
+      (c < 4.5 ? 'Under 4.5, which is hard work on paper and on a screen. Darken the text or lighten the paper.' : 'Comfortable.') + '</p></fieldset>';
+    h += '<fieldset><legend><b>04</b> Your name</legend>' +
+      '<div class="pk-f"><label for="up">How it is set</label><select id="up" data-path="style.upper">' +
+      '<option value="1"' + (S.style.upper ? ' selected' : '') + '>Capitals</option>' +
+      '<option value=""' + (!S.style.upper ? ' selected' : '') + '>As you typed it</option></select></div>' +
+      '<p class="pk-help" style="margin-top:8px">Nothing here carries anyone else\'s branding. What you export is yours.</p></fieldset>';
+    return h;
+  }
+  function exportRow(kind) {
+    const imgs = kind !== 'portfolio';
+    return '<fieldset><legend><b>·</b> Send it or put it on your site</legend>' +
+      '<p class="pk-help">' + (imgs ? 'The PDF is what you attach to an email. The web image is what you upload to your own page. The print image is the same thing at 300 DPI for a shop.'
+        : 'The PDF is what you attach or link to. On your own site, use your original files: they are better than any copy of them.') + '</p>' +
+      '<div class="pk-actions"><button type="button" class="pk-btn primary" data-pdf="' + kind + '"' + (kind === 'rates' && rateBlocks().length ? ' disabled' : '') + '>PDF</button>' +
+      (imgs ? '<button type="button" class="pk-btn" data-img="' + kind + '">Image for the web</button><button type="button" class="pk-btn" data-imgp="' + kind + '">Image for print</button>' : '') +
+      '</div></fieldset>';
+  }
+  function formBook() {
+    const d = DISC[S.disc], ag = S.disc === 'model' || S.disc === 'performer';
+    let h = '<fieldset><legend><b>01</b> Who</legend>' +
+      '<p class="pk-help"><b>' + esc(d.label) + '</b>, sending to <b>' + esc(lcFirst(audLabel())) + '</b>. Change that on the first tab. Everything you export is made from what you put here, and nothing states a fact that is not here.</p>' +
+      '<div class="pk-row">' + field('Name as it should print', 'who.name', { hint: 'The name you work under' }) + field('Based', 'who.based', { hint: 'Amsterdam' }) + '</div>' +
+      (ag ? '<div class="pk-row">' + field('Your age', 'who.age', { mode: 'numeric', hint: '19' }) + field('Parent or guardian, if you are under 18', 'who.guardian', { hint: 'Their name, and a phone or email' }) + '</div>' : '') +
+      '<div class="pk-row">' + field(d.repLabel, 'who.rep', { hint: 'Leave empty if you are not represented' }) + field('Their contact', 'who.repContact', { hint: 'bookings@agency.com' }) + '</div>' +
+      '<div class="pk-row">' + field('Your email', 'who.email', { type: 'email', hint: 'you@example.com' }) + field('Phone', 'who.phone') + '</div>' +
+      field('Site or main link', 'who.site', { hint: 'example.com' }) + '</fieldset>';
+    h += '<fieldset><legend><b>02</b> The one line, and the bio</legend><p class="pk-help">' + esc(d.pitchAsk) + '</p>' +
+      field('One line', 'pitch', { hint: d.pitchEg }) +
+      field('Short bio', 'bio', { area: true, rows: 5, hint: 'Three or four sentences. Plain. No adjectives you would not say out loud.' }) + '</fieldset>';
+    if (d.meas.length) {
+      h += '<fieldset><legend><b>03</b> The facts</legend>' +
+        '<p class="pk-help">Centimetres and inches are the same number in two units, so one is worked out from the other. Clothing and shoe sizes are not: the scales disagree between makers, so only the ones you type are printed.</p>' + srcHtml(['sizes']) +
+        selectF('Print lengths as', 'units', [['cm', 'Centimetres'], ['in', 'Inches'], ['both', 'Both, metric first']]);
+      for (const key of d.meas) {
+        const m = MEAS[key], id = 'm-' + key;
+        if (m.kind === 'len') {
+          const cm = S.meas[key] || '', p = lenParts(cm);
+          h += '<div class="pk-meas"><div><label for="' + id + '">' + esc(m.label) + '</label><input id="' + id + '" type="text" inputmode="decimal" data-meas="' + key + '" value="' + esc(cm) + '" placeholder="' + (key === 'height' ? '176' : '') + '"></div>' +
+            '<div><label for="' + id + '-u" class="vh">Unit</label><input id="' + id + '-u" type="text" value="cm" readonly tabindex="-1" aria-hidden="true" style="text-align:center;color:var(--muted)"></div>' +
+            '<div class="drv">' + (p ? esc(m.feet ? p.ftin : f1(p.in) + ' in') : 'and in inches') + '</div></div>';
+        } else if (m.kind === 'size') {
+          const v = S.meas[key] || {};
+          h += '<label id="lab-' + id + '">' + esc(m.label) + '</label><div class="pk-row3" role="group" aria-labelledby="lab-' + id + '">' +
+            ['eu', 'uk', 'us'].map(sc => '<div><label for="' + id + '-' + sc + '" class="vh">' + esc(m.label + ' ' + sc.toUpperCase()) + '</label>' +
+              '<input id="' + id + '-' + sc + '" type="text" data-size="' + key + '.' + sc + '" value="' + esc(v[sc] || '') + '" placeholder="' + sc.toUpperCase() + '"></div>').join('') + '</div>';
+        } else h += field(m.label, 'meas.' + key, { hint: key === 'eyes' ? 'green' : 'dark brown' });
+      }
+      h += '<label id="lab-extra">Anything else a form asks you for</label><ul class="pk-list" aria-labelledby="lab-extra">' +
+        S.extra.map((e, i) => '<li class="pk-inline"><input type="text" data-extra="' + i + '.label" value="' + esc(e.label) + '" placeholder="Label" aria-label="Label ' + (i + 1) + '"><input type="text" data-extra="' + i + '.value" value="' + esc(e.value) + '" placeholder="Value" aria-label="Value ' + (i + 1) + '"><button type="button" class="pk-x" data-del-extra="' + i + '" aria-label="Remove row ' + (i + 1) + '">×</button></li>').join('') +
+        '</ul><button type="button" class="pk-add" data-add="extra">Add a fact</button></fieldset>';
+    } else {
+      h += '<fieldset><legend><b>03</b> The facts</legend><p class="pk-help">Labelled facts, printed in the order you put them. A booker reads these first.</p>' +
+        '<ul class="pk-list" aria-label="Facts">' + S.extra.map((e, i) => '<li class="pk-inline"><input type="text" data-extra="' + i + '.label" value="' + esc(e.label) + '" placeholder="Label" aria-label="Label ' + (i + 1) + '"><input type="text" data-extra="' + i + '.value" value="' + esc(e.value) + '" placeholder="Value" aria-label="Value ' + (i + 1) + '"><button type="button" class="pk-x" data-del-extra="' + i + '" aria-label="Remove row ' + (i + 1) + '">×</button></li>').join('') +
+        '</ul><button type="button" class="pk-add" data-add="extra">Add a fact</button></fieldset>';
+    }
+    h += '<fieldset><legend><b>04</b> ' + esc(d.hiLabel) + '</legend>' +
+      '<p class="pk-help">One line each. Nothing yet is fine: an honest empty list beats a padded one. A number here needs the year it happened, or it reads as a claim rather than a fact.</p>' +
+      '<ul class="pk-list" aria-label="' + esc(d.hiLabel) + '">' + S.highlights.map((v, i) => '<li class="pk-inline"><input type="text" data-hi="' + i + '" value="' + esc(v) + '" placeholder="' + esc(d.hiEg) + '" aria-label="Line ' + (i + 1) + '"><button type="button" class="pk-x" data-del-hi="' + i + '" aria-label="Remove line ' + (i + 1) + '">×</button></li>').join('') + '</ul>' +
+      '<button type="button" class="pk-add" data-add="hi">Add a line</button>' +
+      '<div id="pk-flags" aria-live="polite">' + flagHtml() + '</div></fieldset>';
+    if (d.extraAsk) { h += '<fieldset><legend><b>05</b> The detail</legend>';
+      for (const [kk, lab, hint] of d.extraAsk) h += field(lab, 'asks.' + kk, { hint }); h += '</fieldset>'; }
+    if (d.techLabel) h += '<fieldset><legend><b>06</b> ' + esc(d.techLabel) + '</legend>' +
+      '<p class="pk-help">' + (S.disc === 'dj' ? 'The booth list. Not demands, a list so the night runs. The club standard in 2026 is the CDJ-3000, so say it if that is what you need.' : 'What the other side needs to have ready.') + '</p>' +
+      field(d.techLabel, 'tech', { area: true, rows: 4 }) + '</fieldset>';
+    h += '<fieldset><legend><b>07</b> Links</legend><ul class="pk-list" aria-label="Links">' +
+      S.links.map((l, i) => '<li class="pk-inline"><input type="text" data-link="' + i + '.label" value="' + esc(l.label) + '" placeholder="Label" aria-label="Link label ' + (i + 1) + '"><input type="url" data-link="' + i + '.url" value="' + esc(l.url) + '" placeholder="https://" aria-label="Link address ' + (i + 1) + '"><button type="button" class="pk-x" data-del-link="' + i + '" aria-label="Remove link ' + (i + 1) + '">×</button></li>').join('') +
+      '</ul><button type="button" class="pk-add" data-add="link">Add a link</button>' +
+      '<p class="pk-help" style="margin-top:8px">' + (S.disc === 'dj' ? 'Mixes on SoundCloud or Mixcloud, not a download link, and your Instagram or TikTok. ' : S.disc === 'performer' ? 'Your showreel goes here. ' : '') +
+      'These come out clickable in the PDF, so nobody has to type them.</p></fieldset>';
+    return h;
+  }
+  function cardControls() {
+    return '<fieldset><legend><b>·</b> The comp card</legend>' +
+      selectF('Trim size', 'trim', Object.entries(TRIMS).map(([kk, v]) => [kk, v.label])) +
+      '<div style="display:flex;gap:8px;align-items:flex-start;margin:10px 0 0"><input type="checkbox" id="pk-bleed" data-check="bleed"' + (S.bleed ? ' checked' : '') + '><label for="pk-bleed" style="margin:0;color:var(--text);font-size:13px">3 mm bleed and crop marks, which is what a print shop asks for</label></div></fieldset>';
+  }
+  function formPhotos() {
+    const d = S.disc, onCard = OUTS[d].includes('card'), folio = OUTS[d].includes('portfolio');
+    let h = '';
+    if (d === 'model') h += '<fieldset><legend><b>·</b> The four digitals, tonight, on a phone</legend><ol class="pk-how">' +
+      DIGITALS_HOW.map(s => '<li>' + esc(s) + '</li>').join('') + '</ol>' + srcHtml(['digitals']) +
+      '<p class="pk-help" style="margin-top:8px">Add them in the order headshot, three-quarter, profile, full length and they are labelled for you.</p></fieldset>';
+    const lead = { model: 'Four digitals for an agency, and your styled shots for the comp card and the portfolio.',
+      dj: 'A live or booth shot at least 2000 pixels wide, and the photographs for your comp card and portfolio.',
+      performer: 'A recent colour headshot that looks like you today, and full length and performance shots for your comp card and portfolio.',
+      creative: 'Twelve to thirty of your best, in one line of work, in the order you want them seen.',
+      other: 'Your best work, in the order you want it seen.' }[d];
+    h += '<fieldset><legend><b>01</b> Photographs</legend><p class="pk-help">' + esc(lead) + ' They are read in this browser and stay in it. Nothing is uploaded.</p><div class="pk-photos" id="pk-drop">';
+    S.photos.forEach((p, i) => {
+      const isDigi = d === 'model' && DIGI.includes(p.kind), capOn = folio && inFolio(p);
+      const cardSlot = onCard && p.role !== 'off', dpi = Math.round(dpiOf(p)), okd = dpi >= 300, g = goodTo(p);
+      h += '<div class="pk-ph"><img class="thumb" id="th-' + p.id + '" src="' + thumbUrl(p) + '" alt="' + esc(p.name || 'photograph') + '">' +
+        '<label for="k-' + p.id + '">What it is</label><select id="k-' + p.id + '" data-kind="' + p.id + '">' +
+        (KINDS[d].some(([kk]) => kk === p.kind) ? KINDS[d] : [[p.kind, KIND_LABEL[p.kind] || p.kind], ...KINDS[d]])
+          .map(([kk, l]) => '<option value="' + kk + '"' + (p.kind === kk ? ' selected' : '') + '>' + esc(l) + '</option>').join('') + '</select>' +
+        (isDigi ? '<div style="display:flex;gap:7px;align-items:flex-start;margin-top:8px"><input type="checkbox" id="pl-' + p.id + '" data-plain="' + p.id + '"' + (p.plain ? ' checked' : '') + '><label for="pl-' + p.id + '" style="margin:0;font-size:12px;color:var(--text)">Plain wall, daylight, no filter</label></div>' : '') +
+        (onCard ? '<label for="r-' + p.id + '">On the comp card</label><select id="r-' + p.id + '" data-role="' + p.id + '">' +
+          [['front', 'Front'], ['back', 'Back'], ['off', 'Not on it']].map(([kk, l]) => '<option value="' + kk + '"' + (p.role === kk ? ' selected' : '') + '>' + l + '</option>').join('') + '</select>' : '') +
+        (cardSlot ? '<div class="dpi' + (okd ? '' : ' bad') + '">' + dpi + ' DPI on the card' + (okd ? ', good for print' : '') + '</div>' +
+            (okd ? '' : '<p class="pk-help" style="margin:4px 0 0">Under the 300 DPI a print shop wants. Good up to about ' + f1(g[0]) + ' × ' + f1(g[1]) + ' mm.</p>') +
+            '<label for="fx-' + p.id + '">Across</label><input id="fx-' + p.id + '" type="range" min="0" max="100" value="' + p.fx + '" data-fx="' + p.id + '">' +
+            '<label for="fy-' + p.id + '">Up and down</label><input id="fy-' + p.id + '" type="range" min="0" max="100" value="' + p.fy + '" data-fy="' + p.id + '">'
+          : '<div class="dpi" style="color:var(--muted)">' + p.w + ' × ' + p.h + ' px</div>') +
+        (capOn ? '<label for="cap-' + p.id + '">What it was</label><input id="cap-' + p.id + '" type="text" data-cap="' + p.id + '" value="' + esc(p.caption || '') + '" placeholder="Project, client, year">' : '') +
+        (isDigi ? '' : '<label for="cr-' + p.id + '">Photographer</label><input id="cr-' + p.id + '" type="text" value="' + esc(p.credit) + '" data-credit="' + p.id + '" placeholder="' + (d === 'creative' ? 'You, unless someone else shot it' : 'Their name') + '">') +
+        '<div class="pk-actions" style="margin-top:8px">' +
+        '<button type="button" class="pk-x" data-up="' + i + '" aria-label="Move earlier"' + (i ? '' : ' disabled') + '>↑</button>' +
+        '<button type="button" class="pk-x" data-down="' + i + '" aria-label="Move later"' + (i < S.photos.length - 1 ? '' : ' disabled') + '>↓</button>' +
+        '<button type="button" class="pk-x" style="flex:1" data-del-photo="' + p.id + '">Remove</button></div></div>';
+    });
+    h += '<div class="pk-drop" id="pk-dropzone"><label for="pk-file" class="pk-btn" style="display:inline-block;cursor:pointer;color:var(--text)">Choose photographs</label>' +
+      '<input id="pk-file" type="file" accept="image/*" multiple class="vh"><div style="margin-top:8px">or drag them here</div></div></div>';
+    const noCred = S.photos.filter(p => !(d === 'model' && DIGI.includes(p.kind)) && !has(p.credit)).length;
+    if (noCred && d !== 'creative') h += '<div class="pk-flag"><b>' + noCred + ' photograph' + (noCred > 1 ? 's have' : ' has') + ' no photographer named.</b> The copyright is the photographer\'s, so name them.</div>';
+    if (!idbOk && S.photos.length) h += '<div class="pk-flag"><b>This browser will not keep the photographs after you close the page.</b> That happens when the file is opened straight off the disk. Everything works, but use Save to a file before you close it.</div>';
+    h += '</fieldset>';
+    if (onCard) h += cardControls();
+    return h;
+  }
+  function formRates() {
+    const d = DISC[S.disc];
+    let h = '<fieldset><legend><b>01</b> ' + esc(d.ratesTitle) + '</legend>' +
+      '<p class="pk-help">A rate leaves with its terms or it does not leave. A priced line with nothing saying what it covers blocks the card, because that is the line that turns into an argument later. Starting out and playing or shooting for free for now? Leave this empty: nothing here is required until you charge.</p>' +
+      field('Currency', 'currency', { hint: '€' });
+    S.rates.forEach((r, i) => {
+      h += '<div class="pk-rate"><div class="hd">' +
+        '<div><label for="rl-' + i + '">What it is</label><input id="rl-' + i + '" type="text" data-rate="' + i + '.label" value="' + esc(r.label) + '" placeholder="Day rate"></div>' +
+        '<div><label for="ra-' + i + '">Amount</label><input id="ra-' + i + '" type="text" inputmode="decimal" data-rate="' + i + '.amount" value="' + esc(r.amount) + '" placeholder="Empty means on request"></div>' +
+        '<div><button type="button" class="pk-x" data-del-rate="' + i + '" aria-label="Remove ' + esc(r.label || 'rate ' + (i + 1)) + '" style="margin-bottom:1px">×</button></div></div>' +
+        field('Per', 'rates.' + i + '.unit', { hint: 'a day, a set, an hour' }) +
+        field('What the fee covers', 'rates.' + i + '.includes', { area: true, rows: 2, hint: 'Hours, travel inside the city, one round of changes' }) +
+        field('What it does not', 'rates.' + i + '.excludes', { area: true, rows: 2, hint: 'Flights, accommodation, anything after the agreed hours' }) +
+        field('Usage, if the work gets used', 'rates.' + i + '.usage', { area: true, rows: 2, hint: 'Six months, social and web, one country' }) + '</div>';
+    });
+    h += '<button type="button" class="pk-add" data-add="rate">Add a rate</button></fieldset>';
+    h += '<fieldset><legend><b>02</b> The terms, once, for all of them</legend>' +
+      field('What every rate includes', 'terms.included', { area: true, rows: 2 }) +
+      field('What is never included', 'terms.excluded', { area: true, rows: 2 }) +
+      field('Usage and licence', 'terms.usage', { area: true, rows: 2, hint: 'Market practice runs from about 1.3x for 30 days of exclusivity to 2.5x and up for a full buyout. Your number, not ours.' }) +
+      field('Payment', 'terms.payment', { area: true, rows: 2, hint: '50 per cent to hold the date, the rest within 14 days' }) +
+      field('Travel', 'terms.travel', { area: true, rows: 2 }) +
+      '<div class="pk-row">' + field('How many days this holds', 'terms.holds', { mode: 'numeric' }) + field('From', 'terms.from', { type: 'date' }) + '</div></fieldset>' +
+      '<div id="pk-blocks" aria-live="polite">' + blockHtml() + '</div>' +
+      '<fieldset><legend><b>03</b> Paper</legend>' + selectF('Paper', 'paper', Object.entries(PAPERS).map(([kk, v]) => [kk, v.label])) + '</fieldset>' + exportRow('rates');
+    return h;
+  }
+  function formPaste() {
+    return '<fieldset><legend><b>·</b> The paste block</legend>' +
+      '<p class="pk-help">Plain text in the order forms ask for it. Agency submission forms, a promoter\'s email, a casting call.</p>' +
+      '<div class="pk-copyrow"><button type="button" class="pk-btn primary" data-copy="all">Copy all of it</button>' +
+      '<button type="button" class="pk-btn" data-copy="stats">Just the facts line</button>' +
+      '<button type="button" class="pk-btn" data-copy="bio">Just the bio</button>' +
+      '<button type="button" class="pk-btn" data-copy="links">Just the links</button></div>' +
+      '<label for="pk-pastebox">What will be copied</label><textarea id="pk-pastebox" class="pk-paste" readonly>' + esc(pasteBlock()) + '</textarea></fieldset>';
+  }
+  function formPreview() {
+    const outs = OUTS[S.disc]; if (!outs.includes(S.out)) S.out = outs[0];
+    const o = S.out;
+    const notes = { digitals: 'What an agency asks a new model for. Plain on purpose.', card: 'Front and back, at the trim you choose.',
+      sheet: 'One page, the attachment. A one sheet is one sheet.', portfolio: 'A cover, then one piece to a page, never cropped.',
+      rates: 'Your rates with their terms on them.', paste: 'Plain text, in the order forms ask for it.' };
+    let h = '<fieldset><legend><b>01</b> Look at each one</legend><div class="pk-outs" role="group" aria-label="Which one to look at">' +
+      outs.map(kk => '<button type="button" class="pk-outbtn" data-out="' + kk + '" aria-pressed="' + (o === kk) + '">' + esc(OUT_LABEL[kk]) + '</button>').join('') +
+      '</div><p class="pk-help" style="margin:9px 0 0">' + esc(notes[o]) + '</p></fieldset>';
+    if (o === 'card') h += cardControls();
+    if (['sheet', 'rates', 'digitals', 'portfolio'].includes(o)) h += '<fieldset><legend><b>·</b> Paper</legend>' + selectF('Paper', 'paper', Object.entries(PAPERS).map(([kk, v]) => [kk, v.label])) + '</fieldset>';
+    if (o === 'rates') h += '<div id="pk-blocks" aria-live="polite">' + blockHtml() + '</div>';
+    h += o === 'paste' ? formPaste() : exportRow(o);
+    return h;
+  }
+  function flagHtml() {
+    return yearFlags().map(f => '<div class="pk-flag"><b>' + (f.key === 'bio' ? 'The bio has a number and no year.' : 'A number with no year:') + '</b> ' +
+      (f.key === 'bio' ? 'Add the year, or say it is not a claim.' : esc(f.text)) +
+      '<br><button type="button" data-dismiss="' + f.key + '">Not a claim, leave it</button></div>').join('');
+  }
+  function refreshFlags() { const b = $('#pk-flags'); if (b) b.innerHTML = flagHtml(); }
+  function blockHtml() {
+    const b = rateBlocks();
+    return b.length ? '<div class="pk-block"><b>The rate card is blocked.</b> ' + esc(b.map(x => x.why).join('; ')) + '. Fill those in and it prints.</div>' : '';
+  }
+  function refreshBlocks() {
+    const box = $('#pk-blocks'); if (box) box.innerHTML = blockHtml();
+    const btn = document.querySelector('[data-pdf="rates"]'); if (btn) btn.disabled = rateBlocks().length > 0;
+  }
+  const thumbCache = new Map();
+  function thumbUrl(p, w) {
+    const W = w || 600, H = Math.round(W * 4 / 3), key = p.id + ':' + p.fx + ':' + p.fy + ':' + W;
+    if (thumbCache.has(key)) return thumbCache.get(key);
+    const bmp = shots.get(p.id); if (!bmp) return '';
+    const c = document.createElement('canvas'); c.width = W; c.height = H;
+    cover(c.getContext('2d'), bmp, 0, 0, W, H, p.fx, p.fy);
+    const u = c.toDataURL('image/jpeg', 0.86); thumbCache.set(key, u); return u;
+  }
+
+  /* ================= render ================= */
+  const PREV_K = 3.2;
+  function showCanvas(pg, caption, label) {
+    const fig = el('figure', { class: 'pk-out' });
+    fig.appendChild(el('figcaption', null, esc(caption)));
+    const c = pg.c; c.className = 'pk-canvas';
+    c.style.width = Math.min(pg.w * 3.2, 340) + 'px';
+    c.setAttribute('role', 'img'); c.setAttribute('aria-label', label);
+    fig.appendChild(c); return fig;
+  }
+  const primaryOut = () => { const o = send().first[0]; return o === 'headshot' ? 'sheet' : o; };
+  const previewKind = () => tab === 'preview' ? S.out : tab === 'rates' ? 'rates' : primaryOut();
+  function drawPreview() {
+    const prev = $('#pane-preview'), kind = previewKind(), who = lcFirst(audLabel());
+    prev.innerHTML = '';
+    if (kind === 'paste') { prev.appendChild(el('pre', { class: 'pk-paste', style: 'min-height:0' }, esc(pasteBlock()))); return; }
+    const wrapEl = el('div', { class: 'pk-sheets' }), lead = tab === 'aim' ? 'What ' + who + ' gets: ' : '';
+    let note = '';
+    if (kind === 'card') {
+      wrapEl.appendChild(showCanvas(drawCard('front', PREV_K, false), lead + 'Comp card, front', 'Front of the comp card, with the name ' + (S.who.name || '')));
+      wrapEl.appendChild(showCanvas(drawCard('back', PREV_K, false), 'Back', 'Back of the comp card, with the facts line ' + (statsLine() || 'not filled in yet')));
+      const t = TRIMS[S.trim];
+      note = 'Trim ' + f1(t.w) + ' × ' + f1(t.h) + ' mm' + (S.bleed ? ' plus 3 mm bleed' : '') + '. Exports at 300 DPI.';
+    } else if (kind === 'portfolio') {
+      const fns = folioPages(PREV_K);
+      fns.slice(0, 3).forEach((fn, i) => wrapEl.appendChild(showCanvas(fn(), (i ? '' : lead) + (i ? 'Page ' + (i + 1) : 'Portfolio, cover'), 'Portfolio page ' + (i + 1))));
+      note = fns.length > 3 ? 'And ' + (fns.length - 3) + ' more page' + (fns.length - 3 > 1 ? 's' : '') + '. Exports at 150 DPI, which reads well on a screen and keeps the file small.' : 'Exports at 150 DPI, which reads well on a screen and keeps the file small.';
+    } else if (kind === 'sheet') {
+      const r = oneSheet(PREV_K);
+      wrapEl.appendChild(showCanvas(r.pages[0], lead + 'One sheet', 'The one sheet for ' + (S.who.name || 'you')));
+      if (r.over > 0 || r.dropped) note = 'This runs past one page by about ' + Math.ceil(r.over) + ' mm, so ' + r.dropped + ' block' + (r.dropped === 1 ? '' : 's') + ' did not fit. Shorten the bio or drop a line. A one sheet is one sheet.';
+    } else if (kind === 'rates') {
+      const r = rateSheet(PREV_K);
+      r.pages.forEach((pg, i) => wrapEl.appendChild(showCanvas(pg, (i ? '' : lead) + (r.pages.length > 1 ? 'Rate card ' + (i + 1) : 'Rate card'), 'The rate card')));
+    } else if (kind === 'digitals') {
+      wrapEl.appendChild(showCanvas(digitalsSheet(PREV_K).pages[0], lead + 'Digitals', 'The digitals sheet: headshot, three-quarter, profile and full length, with the stats line'));
+      note = 'Exports at 200 DPI. Agencies look at these on a screen.';
+    }
+    prev.appendChild(wrapEl);
+    if (note) prev.appendChild(el('p', { class: note.startsWith('This runs past') ? 'pk-over' : 'pk-note' }, esc(note)));
+  }
+  // the pickers draw the real thing at a small size, never a word for it
+  function paintSwatches() {
+    document.querySelectorAll('[data-swatch]').forEach(cv => {
+      const [kind, key] = cv.dataset.swatch.split(':'), ctx = cv.getContext('2d');
+      const P = kind === 'pal' ? (key === 'custom' ? S.style.custom : PALETTES[key]) : pal();
+      const F = kind === 'type' ? TYPES[key] : typ();
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.fillStyle = P.paper; ctx.fillRect(0, 0, cv.width, cv.height);
+      if (kind === 'tpl') {
+        const img = mix(P.ink, .3);
+        if (key === 'bar') { ctx.fillStyle = img; ctx.fillRect(0, 0, cv.width, cv.height);
+          ctx.fillStyle = mix(P.ink, .92); ctx.fillRect(0, cv.height - 26, cv.width, 26);
+          ctx.fillStyle = P.paper; ctx.fillRect(8, cv.height - 18, 60, 7); }
+        else if (key === 'frame') { ctx.fillStyle = img; ctx.fillRect(9, 9, cv.width - 18, cv.height - 40);
+          ctx.fillStyle = mix(P.ink, .9); ctx.fillRect(9, cv.height - 24, 58, 7);
+          ctx.fillStyle = P.accent; ctx.fillRect(9, cv.height - 13, 16, 2); }
+        else if (key === 'split') { ctx.fillStyle = img; ctx.fillRect(0, 0, cv.width, cv.height * .66);
+          ctx.fillStyle = P.ink; ctx.fillRect(0, cv.height * .66, cv.width, cv.height * .34);
+          ctx.fillStyle = P.paper; ctx.fillRect(8, cv.height * .66 + 11, 58, 7); }
+        else { ctx.fillStyle = img; ctx.fillRect(0, 0, cv.width, cv.height);
+          const g = ctx.createLinearGradient(0, 0, 0, 44); g.addColorStop(0, mix(P.ink, .6)); g.addColorStop(1, mix(P.ink, 0));
+          ctx.fillStyle = g; ctx.fillRect(0, 0, cv.width, 44);
+          ctx.fillStyle = P.paper; ctx.fillRect(9, 12, 44, 6); }
+        return;
+      }
+      if (kind === 'type') {
+        ctx.fillStyle = P.ink; ctx.font = F.dw + ' 19px ' + F.disp + ', sans-serif';
+        ctx.fillText('Aa Rg', 8, 26);
+        ctx.fillStyle = mix(P.ink, .6); ctx.font = '400 9px ' + F.mono + ', monospace';
+        ctx.fillText('176 cm · EU 39', 8, 42);
+        return;
+      }
+      ctx.fillStyle = P.ink; ctx.fillRect(8, 12, 56, 9);
+      ctx.fillStyle = mix(P.ink, .55); ctx.fillRect(8, 26, 76, 5);
+      ctx.fillStyle = P.accent; ctx.fillRect(8, 36, 24, 5);
+    });
+  }
+  // the chip in the top bar keeps the answer to "is it ready?" in view on every tab
+  function chrome() {
+    const lab = lcFirst(audLabel()), todo = reqs().filter(r => r.st !== 'ok').length, chip = $('#pk-ready');
+    chip.innerHTML = todo ? '<b>' + todo + ' to do</b> for ' + esc(lab) : '<b>Ready</b> for ' + esc(lab);
+    chip.classList.toggle('ready', !todo);
+    chip.setAttribute('aria-label', (todo ? todo + ' things to do before sending to ' : 'Ready to send to ') + lab + '. Show the list.');
+    $('#pk-send').textContent = 'Export for ' + lab;
+  }
+  function render() {
+    normalise();
+    const form = $('#pane-form');
+    document.querySelectorAll('.pk-tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+    form.setAttribute('aria-labelledby', 'tab-' + tab);
+    form.innerHTML =
+      (tab === 'aim' ? formAim() : tab === 'book' ? formBook() : tab === 'photos' ? formPhotos() : tab === 'rates' ? formRates() : tab === 'style' ? formStyle() : formPreview()) +
+      '<fieldset><legend><b>·</b> Keeping it</legend><p class="pk-help">Saved in this browser as you type. Save to a file for a copy you can keep, move to another machine, or come back to next year.</p>' +
+      '<div class="pk-actions"><button type="button" class="pk-btn" id="pk-savefile">Save to a file</button>' +
+      '<label for="pk-loadfile" class="pk-btn" style="cursor:pointer">Load a file</label><input id="pk-loadfile" type="file" accept="application/json" class="vh">' +
+      '<button type="button" class="pk-btn" id="pk-example">Load an example</button>' +
+      '<button type="button" class="pk-btn" id="pk-reset">Start again</button></div></fieldset>';
+    drawPreview();
+    chrome();
+    if (tab === 'style') { paintSwatches(); ensureAllFonts().then(paintSwatches); }
+    if (tab === 'rates' || (tab === 'preview' && S.out === 'rates')) refreshBlocks();
+  }
+  function light() {
+    drawPreview();
+    chrome();
+    if (tab === 'style') paintSwatches();
+    if (tab === 'preview' && S.out === 'paste') { const box = $('#pk-pastebox'); if (box) box.value = pasteBlock(); }
+  }
+
+  /* ================= events ================= */
+  document.querySelectorAll('.pk-tab').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
+  $('#pk-ready').addEventListener('click', () => { tab = 'aim'; render(); });
+  $('#pk-app').addEventListener('input', e => {
+    const t = e.target, d = t.dataset;
+    if (d.path) {
+      set(d.path, d.path === 'style.upper' ? !!t.value : t.value); save();
+      if (/^who\.|^pitch|^bio|^asks\.|^tech|^terms\.|^rates\.|^currency/.test(d.path)) {
+        light(); if (/^terms\.|^rates\./.test(d.path)) refreshBlocks(); if (d.path === 'bio') refreshFlags(); return;
+      }
+      return void render();
+    }
+    if (d.meas) { S.meas[d.meas] = t.value; save(); return void render(); }
+    if (d.size) { const [k2, sc] = d.size.split('.'); S.meas[k2] = S.meas[k2] || {}; S.meas[k2][sc] = t.value; save(); return void light(); }
+    if (d.extra) { const [i, f] = d.extra.split('.'); S.extra[i][f] = t.value; save(); return void light(); }
+    if (d.hi != null && d.hi !== '') { S.highlights[d.hi] = t.value; save(); light(); return void refreshFlags(); }
+    if (d.link) { const [i, f] = d.link.split('.'); S.links[i][f] = t.value; save(); return void light(); }
+    if (d.rate) { const [i, f] = d.rate.split('.'); S.rates[i][f] = t.value; save(); light(); return void refreshBlocks(); }
+    if (d.credit) { const p = S.photos.find(q => q.id === d.credit); if (p) { p.credit = t.value; save(); light(); } return; }
+    if (d.cap) { const p = S.photos.find(q => q.id === d.cap); if (p) { p.caption = t.value; save(); light(); } return; }
+    if (d.custom) { S.style.custom[d.custom] = t.value; save(); light(); const c = contrast(S.style.custom.ink, S.style.custom.paper);
+      const el2 = $('.pk-contrast'); if (el2) { el2.className = 'pk-contrast' + (c < 4.5 ? ' bad' : ''); el2.textContent = 'Text on paper reads at ' + c.toFixed(1) + ' to 1. ' + (c < 4.5 ? 'Under 4.5, which is hard work on paper and on a screen. Darken the text or lighten the paper.' : 'Comfortable.'); } return; }
+    if (d.fx || d.fy) {
+      const id = d.fx || d.fy, p = S.photos.find(q => q.id === id);
+      if (p) { p[d.fx ? 'fx' : 'fy'] = +t.value; thumbCache.clear(); save(); light();
+        const th = $('#th-' + id); if (th) th.src = thumbUrl(p); }
+      return;
+    }
+  });
+  $('#pk-app').addEventListener('change', async e => {
+    const t = e.target, d = t.dataset;
+    if (['disc', 'trim', 'paper', 'units', 'style.upper'].includes(d.path)) { set(d.path, d.path === 'style.upper' ? !!t.value : t.value); if (d.path === 'disc') normalise(); save(); return void render(); }
+    if (d.check === 'bleed') { S.bleed = t.checked; save(); return void render(); }
+    if (d.role) { const p = S.photos.find(q => q.id === d.role); if (p) { if (t.value === 'front') S.photos.forEach(q => { if (q.role === 'front') q.role = 'back'; }); p.role = t.value; save(); render(); } return; }
+    if (d.kind) { const p = S.photos.find(q => q.id === d.kind); if (p) { p.kind = t.value; save(); render(); } return; }
+    if (d.plain) { const p = S.photos.find(q => q.id === d.plain); if (p) { p.plain = t.checked; save(); light(); } return; }
+    if (t.id === 'pk-file') { await addFiles([...t.files]); return; }
+    if (t.id === 'pk-loadfile') {
+      const f = t.files[0]; if (!f) return;
+      try {
+        const j = JSON.parse(await f.text());
+        for (const p of S.photos) await IDB.del(p.id);
+        shots.clear(); thumbCache.clear();
+        const blobs = j.blobs || {}; delete j.blobs;
+        S = merge(DEFAULTS(), j);
+        for (const id in blobs) { const r = await fetch(blobs[id].data), bl = await r.blob(); await IDB.put(id, bl); }
+        await rehydrate(); await ensureFonts(); save(); render(); toast('Loaded.');
+      } catch (err) { toast('That file could not be read.'); }
+    }
+  });
+  $('#pk-app').addEventListener('click', async e => {
+    const b = e.target.closest('button,label'); if (!b) return;
+    const d = b.dataset;
+    if (d.aud) { S.aim.to = d.aud; save(); return void render(); }
+    if (d.out) { S.out = d.out; save(); return void render(); }
+    if (d.fix) {
+      tab = d.fix; render();
+      const f = d.focus && document.getElementById(d.focus);
+      if (f) { f.focus(); f.scrollIntoView({ block: 'center' }); } else $('#pane-form').scrollTop = 0;
+      return;
+    }
+    if (d.tpl) { S.style.template = d.tpl; save(); return void render(); }
+    if (d.type) { S.style.type = d.type; save(); await ensureFonts(); return void render(); }
+    if (d.pal) { S.style.palette = d.pal; save(); return void render(); }
+    if (d.add === 'extra') { S.extra.push({ label: '', value: '' }); save(); return void render(); }
+    if (d.add === 'hi') { S.highlights.push(''); save(); return void render(); }
+    if (d.add === 'link') { S.links.push({ label: '', url: '' }); save(); return void render(); }
+    if (d.add === 'rate') { S.rates.push({ label: '', amount: '', unit: '', includes: '', excludes: '', usage: '' }); save(); return void render(); }
+    if (d.delExtra != null) { S.extra.splice(+d.delExtra, 1); save(); return void render(); }
+    if (d.delHi != null) { S.highlights.splice(+d.delHi, 1); save(); return void render(); }
+    if (d.delLink != null) { S.links.splice(+d.delLink, 1); save(); return void render(); }
+    if (d.delRate != null) { S.rates.splice(+d.delRate, 1); save(); return void render(); }
+    if (d.up != null || d.down != null) {
+      const i = +(d.up ?? d.down), j = d.up != null ? i - 1 : i + 1;
+      if (j >= 0 && j < S.photos.length) { [S.photos[i], S.photos[j]] = [S.photos[j], S.photos[i]]; save(); render(); }
+      return;
+    }
+    if (d.dismiss) { S.dismissed[d.dismiss] = true; save(); return void render(); }
+    if (d.delPhoto) { await IDB.del(d.delPhoto); shots.delete(d.delPhoto); S.photos = S.photos.filter(p => p.id !== d.delPhoto); thumbCache.clear(); save(); return void render(); }
+    if (d.copy) {
+      const txt = d.copy === 'all' ? pasteBlock() : d.copy === 'stats' ? statsLine() : d.copy === 'bio' ? S.bio.trim()
+        : allLinks().map(l => (l.label ? l.label + ': ' : '') + l.url.trim()).join('\n');
+      try { await navigator.clipboard.writeText(txt); toast('Copied.'); } catch (err) { toast('Select it and copy by hand.'); }
+      return;
+    }
+    const guard = async fn => { b.disabled = true; try { await fn(); } catch (err) { status(err.message || 'That did not work.'); } b.disabled = false; };
+    if (d.pdf) return void guard(() => exportPdf(d.pdf));
+    if (d.img) return void guard(() => exportImages(d.img, true));
+    if (d.imgp) return void guard(() => exportImages(d.imgp, false));
+    if (d.sendnow || b.id === 'pk-send') return void guard(exportFor);
+    if (d.digifiles) return void guard(digitalFiles);
+    if (b.id === 'pk-savefile') { saveBlob(new Blob([JSON.stringify(await fileForm(), null, 1)], { type: 'application/json' }), stem() + '-' + slug(TITLE) + '-' + today() + '.json'); toast('Saved, photographs and all.'); return; }
+    if (b.id === 'pk-example' || b.id === 'pk-example2') return void loadExample();
+    if (b.id === 'pk-reset') {
+      if (!confirm('Start again? This clears everything and the photographs in this browser.')) return;
+      for (const p of S.photos) await IDB.del(p.id);
+      shots.clear(); thumbCache.clear(); S = DEFAULTS(); save(); render(); toast('Cleared.');
+    }
+  });
+  async function fileForm() {
+    const out = JSON.parse(JSON.stringify(S)); out.blobs = {};
+    for (const p of S.photos) {
+      const blob = await IDB.get(p.id); if (!blob) continue;
+      out.blobs[p.id] = { type: blob.type, data: await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(blob); }) };
+    }
+    return out;
+  }
+  document.addEventListener('dragover', e => { if (tab !== 'photos') return; e.preventDefault(); const z = $('#pk-dropzone'); if (z) z.classList.add('on'); });
+  document.addEventListener('dragleave', () => { const z = $('#pk-dropzone'); if (z) z.classList.remove('on'); });
+  document.addEventListener('drop', async e => { if (tab !== 'photos') return; e.preventDefault(); const z = $('#pk-dropzone'); if (z) z.classList.remove('on'); await addFiles([...e.dataTransfer.files]); });
+
+  /* ================= examples ================= */
+  const EXAMPLES = {
+    model: {
+      who: { name: 'Nadia Vermeer', based: 'Amsterdam', rep: '', repContact: '', email: 'nadia@example.com', phone: '+31 6 00 00 00 00', site: 'example.com', age: '19', guardian: '' },
+      units: 'both', pitch: 'New face, Amsterdam based, works in English and Dutch.',
+      bio: 'Starting out. Two test shoots with local photographers so far, and comfortable in front of a camera.\n\nI read Dutch and English fluently and take direction in both.',
+      meas: { height: '176', bust: '84', waist: '62', hips: '89', dress: { eu: '36', uk: '8', us: '4' }, shoe: { eu: '39', uk: '6' }, hair: 'dark brown', eyes: 'green' },
+      highlights: [],
+      links: [{ label: 'Instagram', url: 'https://instagram.com/example' }],
+      rates: [], terms: { holds: '30', from: today() },
+    },
+    dj: {
+      who: { name: 'Roan Six', based: 'Rotterdam', rep: '', repContact: '', email: 'roan@example.com', phone: '', site: 'example.com', age: '', guardian: '' },
+      pitch: 'Melodic house and breaks, vinyl and CDJ, 120 to 128 bpm, long sets.',
+      bio: 'I play the early slot at a small Rotterdam bar on Fridays, and have done since the spring. Melodic house and breaks, mostly vinyl, built slowly rather than a highlight reel. I am after a warm-up slot on a club night where the room fills over a few hours and the set has time to go somewhere.',
+      asks: { sets: 'Two hours as standard, four for an extended set', bpm: '120 to 128 bpm', resident: 'Fridays at a Rotterdam bar since spring 2026' },
+      highlights: ['Friday early slot at a Rotterdam bar since spring 2026.'],
+      tech: 'Two CDJ-3000 and a DJM-A9, linked. Booth monitor on its own send. One turntable if vinyl is wanted, Technics 1210.\nNo laptop, no USB hub. I bring my own headphones.',
+      links: [{ label: 'SoundCloud', url: 'https://soundcloud.com/example' }, { label: 'Instagram', url: 'https://instagram.com/example' }],
+      rates: [], terms: { holds: '30', from: today() },
+    },
+    performer: {
+      who: { name: 'Ilse Mak', based: 'The Hague', rep: '', repContact: '', email: 'ilse@example.com', phone: '', site: 'example.com', age: '24', guardian: '' },
+      units: 'cm', pitch: 'Contemporary and commercial dance, partner work, speaks English and Malay.',
+      bio: 'Trained in contemporary, starting out commercially. Strong partner work and quick to pick up choreography in a room with no time.',
+      meas: { height: '168', bust: '82', waist: '64', hips: '90', dress: { eu: '36' }, shoe: { eu: '38' }, hair: 'black', eyes: 'brown' },
+      asks: { skills: 'Contemporary, jazz, partner work, some aerial, driving licence', training: 'Codarts Rotterdam, 2018 to 2022' },
+      highlights: [],
+      links: [{ label: 'Showreel', url: 'https://vimeo.com/example' }],
+      rates: [], terms: { holds: '30', from: today() },
+    },
+    creative: {
+      who: { name: 'Sam de Wit', based: 'Utrecht', rep: '', repContact: '', email: 'sam@example.com', phone: '', site: 'example.com', age: '', guardian: '' },
+      pitch: 'Still life and food photography for food brands and restaurants.',
+      bio: 'I shoot food that has to look like food. Studio work mostly, on location when the kitchen is the point.',
+      asks: { services: 'Shoot days, half days, retouching by the image', turnaround: 'Selects in 48 hours, finals within a week' },
+      highlights: ['Menu photography for a restaurant group, 2025.'],
+      tech: 'Studio with daylight and flash, two tables, a home economist if the shoot needs one.',
+      links: [{ label: 'Work', url: 'https://example.com' }],
+      rates: [
+        { label: 'Shoot day', amount: '1200', unit: 'a day', includes: 'Nine hours, studio, lighting, one assistant, ten finished images.', excludes: 'Food, props, a home economist, travel outside Utrecht.', usage: 'Two years, web and social, one country.' },
+      ],
+      terms: { included: 'Studio, lighting, the shoot, and the edit of the agreed images.', excluded: 'Food, props, models, travel outside Utrecht.', usage: 'Beyond two years, or print, or another country, is priced before the shoot.', payment: '50 per cent to hold the date, the rest within 14 days.', travel: 'At cost outside Utrecht, agreed first.', holds: '90', from: today() },
+    },
+    other: { who: { name: 'Your name', based: '' }, extra: [{ label: 'What you do', value: '' }], rates: [], terms: { holds: '30', from: today() } },
+  };
+  function loadExample() {
+    const ex = EXAMPLES[S.disc]; if (!ex) return;
+    const keep = { photos: S.photos, disc: S.disc, trim: S.trim, bleed: S.bleed, paper: S.paper, style: S.style, aim: S.aim, out: S.out };
+    S = merge(DEFAULTS(), JSON.parse(JSON.stringify(ex)));
+    Object.assign(S, keep);
+    save(); render(); toast('An example for someone starting out. Type over it.');
+  }
+
+  /* ================= start ================= */
+  (async function start() {
+    try { const j = JSON.parse(localStorage.getItem(KEY)); if (j && j.v) S = merge(DEFAULTS(), j); } catch (e) {}
+    await rehydrate();
+    await ensureFonts();
+    render();
+    status('Nothing leaves this browser.');
+    if (document.fonts) document.fonts.ready.then(() => light());
+  })();
+})();
+</script>
+</body>
+</html>
