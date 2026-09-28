@@ -678,10 +678,10 @@ window.FL_FONTS = {
 
   /* ================= what a discipline asks for ================= */
   const MEAS = {
-    height: { label: 'Height', kind: 'len', feet: true, stat: '' },
-    bust:   { label: 'Bust or chest', kind: 'len', stat: '' },
-    waist:  { label: 'Waist', kind: 'len', stat: '' },
-    hips:   { label: 'Hips', kind: 'len', stat: '' },
+    height: { label: 'Height', kind: 'len', feet: true, stat: 'height %' },
+    bust:   { label: 'Bust or chest', kind: 'len', stat: '' },  // worded by bustWord(): bust, chest, or both
+    waist:  { label: 'Waist', kind: 'len', stat: 'waist %' },
+    hips:   { label: 'Hips', kind: 'len', stat: 'hips %' },
     inseam: { label: 'Inside leg', kind: 'len', stat: 'inside leg %' },
     collar: { label: 'Collar', kind: 'len', stat: 'collar %' },
     dress:  { label: 'Dress size', kind: 'size', stat: 'dress %' },
@@ -848,7 +848,7 @@ window.FL_FONTS = {
   /* ================= state ================= */
   const DEFAULTS = () => ({
     v: 2,
-    disc: 'model', units: 'cm',
+    disc: 'model', units: 'cm', bustWord: 'bust/chest',
     aim: { to: 'agency' }, out: 'digitals',
     trim: 'a5', bleed: true, paper: 'a4',
     style: { template: 'bar', type: 'plain', palette: 'ink', custom: { paper: '#FFFFFF', ink: '#111111', accent: '#C0392B' }, upper: true },
@@ -953,12 +953,17 @@ window.FL_FONTS = {
     return S.units === 'cm' ? metric : S.units === 'in' ? imp : metric + ' (' + imp + ')';
   }
   const sizeText = v => !v ? '' : ['eu', 'uk', 'us'].filter(k => (v[k] || '').trim()).map(k => k.toUpperCase() + ' ' + v[k].trim()).join(' / ');
+  // Every stat carries its word, as the published formats do. Bust or chest is the model's choice; until they
+  // choose, it reads "bust/chest", The Model Guide's own wording.
+  const bustWord = () => ({ bust: 'bust', chest: 'chest' })[S.bustWord] || 'bust/chest';
   function factRows() {
     const out = [];
     for (const k of DISC[S.disc].meas) {
       const m = MEAS[k], v = S.meas[k];
       const t = m.kind === 'len' ? lenText(v, m.feet) : m.kind === 'size' ? sizeText(v) : (v || '').trim();
-      if (t) out.push([m.label, t, m.stat ? m.stat.replace('%', t) : t]);
+      if (!t) continue;
+      if (k === 'bust') { const w = bustWord(); out.push([w.charAt(0).toUpperCase() + w.slice(1), t, w + ' ' + t]); continue; }
+      out.push([m.label, t, m.stat ? m.stat.replace('%', t) : t]);
     }
     for (const e of S.extra) if ((e.label || '').trim() && (e.value || '').trim()) out.push([e.label.trim(), e.value.trim(), e.label.trim().toLowerCase() + ' ' + e.value.trim()]);
     return out;
@@ -1915,7 +1920,8 @@ window.FL_FONTS = {
           const cm = S.meas[key] || '', p = lenParts(cm);
           h += '<div class="pk-meas"><div><label for="' + id + '">' + esc(m.label) + '</label><input id="' + id + '" type="text" inputmode="decimal" data-meas="' + key + '" value="' + esc(cm) + '" placeholder="' + (key === 'height' ? '176' : '') + '"></div>' +
             '<div><label for="' + id + '-u" class="vh">Unit</label><input id="' + id + '-u" type="text" value="cm" readonly tabindex="-1" aria-hidden="true" style="text-align:center;color:var(--muted)"></div>' +
-            '<div class="drv">' + (p ? esc(m.feet ? p.ftin : f1(p.in) + ' in') : 'and in inches') + '</div></div>';
+            '<div class="drv">' + (p ? esc(m.feet ? p.ftin : f1(p.in) + ' in') : 'and in inches') + '</div></div>' +
+            (key === 'bust' ? selectF('Called on your card', 'bustWord', [['bust/chest', 'Bust/chest'], ['bust', 'Bust'], ['chest', 'Chest']]) : '');
         } else if (m.kind === 'size') {
           const v = S.meas[key] || {};
           h += '<label id="lab-' + id + '">' + esc(m.label) + '</label><div class="pk-row3" role="group" aria-labelledby="lab-' + id + '">' +
@@ -2296,7 +2302,7 @@ window.FL_FONTS = {
   const EXAMPLES = {
     model: {
       who: { name: 'Nadia Vermeer', based: 'Amsterdam', rep: '', repContact: '', email: 'nadia@example.com', phone: '+31 6 00 00 00 00', site: 'example.com', age: '19', guardian: '' },
-      units: 'both', pitch: 'New face, Amsterdam based, works in English and Dutch.',
+      units: 'both', bustWord: 'bust', pitch: 'New face, Amsterdam based, works in English and Dutch.',
       bio: 'Starting out. Two test shoots with local photographers so far, and comfortable in front of a camera.\n\nI read Dutch and English fluently and take direction in both.',
       meas: { height: '176', bust: '84', waist: '62', hips: '89', dress: { eu: '36', uk: '8', us: '4' }, shoe: { eu: '39', uk: '6' }, hair: 'dark brown', eyes: 'green' },
       highlights: [],
